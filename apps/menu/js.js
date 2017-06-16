@@ -1,27 +1,34 @@
+var appName = "menu"
+
 var appsPerPage = 12
 var appsPerLine = 3
 
 var maxpage = 0
-var appName = "menu"
 
 if (apps[appName].phoneIndex == null) {
-    apps[appName].phoneIndex = 1
+    apps[appName].phoneIndex = 0
 }
 if (apps[appName].pageIndex == null) {
-    apps[appName].pageIndex = 1
+    apps[appName].pageIndex = 0
 }
 
 var pages = []
-
-$(function() {
-    menu_init()
-})
 
 function sort_apps(a, b) {
     return ($(b).data('index')) < ($(a).data('index')) ? 1 : -1
 }
 
-function menu_init() {
+function showPage(page) {
+    $(".menu").find(".application").each(function(index, element) {
+        $(this).remove()
+    })
+    $(".page").eq(apps[appName].pageIndex).removeClass("selected")
+    $(".page").eq(page).addClass("selected")
+    $(".menu").append(apps[appName].pages[page].data)
+    apps[appName].pageIndex = page
+}
+
+apps[appName].init = function () {
     $("#phone-content").css("background-image", "url('https://thechive.files.wordpress.com/2015/01/i-think-its-time-for-a-new-phone-background-50-photos-4.jpg')")
     $(".menu .application").sort(sort_apps).appendTo('.menu')
     if (apps[appName].pages == null) {
@@ -49,15 +56,12 @@ function menu_init() {
     $(".menu").find(".application").eq(apps[appName].phoneIndex).addClass("selected")
 }
 
-function showPage(page) {
-    $(".menu").find(".application").each(function(index, element) {
-        $(this).remove()
-    })
-    $(".page").eq(apps[appName].pageIndex).removeClass("selected")
-    $(".page").eq(page).addClass("selected")
-    $(".menu").append(apps[appName].pages[page].data)
-    apps[appName].pageIndex = page
+apps[appName].terminate = function () {
 }
+
+$(function() {
+    apps[appName].init()
+})
 
 apps[appName].phoneUp = function() {
     $(".application").eq(apps[appName].phoneIndex).removeClass("selected")
@@ -136,4 +140,10 @@ apps[appName].phoneSelect = function() {
     //sendData("app-" + data.data("trigger"), data.data("return"));
     showApp(data.data("trigger"))
     playSound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+}
+
+apps[appName].phoneOption = function() {
+}
+
+apps[appName].phoneExtraOption = function() {
 }

@@ -19,6 +19,7 @@ function sendMessage(string) {
 
 $(function() {
     init()
+
     window.addEventListener("message", function(event) {
         var data = event.data;
 
@@ -46,6 +47,9 @@ $(function() {
             playSound("Pull_Out", "Phone_SoundSet_Michael")
         }
         else if (data.hide) {
+            if (typeof apps[currentApp].terminate === 'function') {
+                apps[currentApp].terminate()
+            }
             $("#container").slideUp(500)
             playSound("Put_Away", "Phone_SoundSet_Michael")
         }
@@ -80,7 +84,7 @@ $(function() {
 function showApp(appname) {
     if (apps[appname]) {
         $(`#${currentApp}`).remove()
-        $.getScript(`../apps/${appname}/${appname}.js`)
+        $.getScript(`../apps/${appname}/js.js`)
         $("#phone-content").append(apps[appname].data)
         currentApp = appname
     }
@@ -91,6 +95,12 @@ function init() {
         var name = $(this).data("app")
 
         apps[name] = {}
+
+        $(this).load(`../apps/${name}/html.html`, function(response, status, xhr) {
+            if (status !== "error") {
+                $(this).html(response)
+            }
+        })
         apps[name].data = $(this).detach()
         apps[name].init = false
     })

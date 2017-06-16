@@ -7,6 +7,7 @@ enable_phone = true
 showPhone = false
 inCall = false
 inputBlocked = false
+cursor = false
 currentApp = "menu"
 
 
@@ -16,36 +17,6 @@ currentApp = "menu"
 --
 --------------------------------------------------------------------------------
 Citizen.CreateThread(function()
-	local blip1 = AddBlipForCoord(-7.100, -0.300, 73.077)
-	SetBlipSprite(blip1, 442)
-	SetBlipDisplay(blip1, 3)
-	SetBlipColour(blip1, 26)
-	SetBlipScale(blip1, 1.0)
-	while true do
-		Wait(500)
-		SetBlipFade(blip1, 100, 255)
-		Wait(500)
-		SetBlipFade(blip1, 255, 100)
-	end
-end)
-
-Citizen.CreateThread(function() -- Clock Thread
-	while true do
-		Citizen.Wait(100)
-		updateDate()
-	end
-end)
-
-Citizen.CreateThread(function()
-	while true do Citizen.Wait(100)
-		if GetCurrentPedWeapon(GetPlayerPed(-1)) then
-			ePhoneHide()
-		end
-	end
-end)
-
-Citizen.CreateThread(function()
-	NetworkOverrideClockTime(8,  8,  8)
 	while true do Citizen.Wait(1)
 		if IsPlayerPlayingAnimation() and showPhone then
 			ePhoneHide()
@@ -54,20 +25,27 @@ Citizen.CreateThread(function()
 			SetPedCanRagdoll(GetPlayerPed(-1), true)
 		end
 
+		-- Hide phone if player is dead
 		if IsPlayerDead(PlayerId()) then
 			ePhoneHide()
 		end
+
+		-- Test things
 		if showPhone then
 			SetPedCanPlayGestureAnims(GetPlayerPed(-1), false)
 			SetPedCanPlayVisemeAnims(GetPlayerPed(-1), false)
 		else
 			SetPedCanPlayGestureAnims(GetPlayerPed(-1), true)
 		end
+
+		-- Charge event
 		if IsPedInAnyVehicle(GetPlayerPed(-1), false) and not IsPedOnAnyBike(GetPlayerPed(-1)) then
 			TriggerEvent("ephone:battery_in_charge")
 		else
 			TriggerEvent("ephone:battery_not_in_charge")
 		end
+
+		-- Enable phone
 		if enable_phone then
 			if IsControlJustPressed(3, 27) then
 				ePhoneShow()
@@ -94,6 +72,33 @@ Citizen.CreateThread(function()
 				end
 			end
 		end
+
+		-- Hide phone if player holds a weapon
+		if GetCurrentPedWeapon(GetPlayerPed(-1)) then
+			ePhoneHide()
+		end
+
+		-- Update phone date
+		updateDate()
+
+		-- Cursor handle
+		if cursor then
+			DisableControlAction(0, 1, cursor)
+			DisableControlAction(0, 2, cursor)
+			DisableControlAction(0, 142, cursor)
+			DisableControlAction(0, 106, cursor)
+			DisableControlAction(0, 16, cursor)
+			DisableControlAction(0, 17, cursor)
+			DisableControlAction(0, 85, cursor)
+			DisableControlAction(0, 99, cursor)
+			DisableControlAction(0, 100, cursor)
+			if IsDisabledControlJustReleased(0, 142) then
+				SendNUIMessage({
+					rightclick = true
+				})
+			end
+		end
+		SetNuiFocus(cursor)
 	end
 end)
 
@@ -123,6 +128,10 @@ RegisterNUICallback("message", function(data, cb)
 	TriggerEvent('chatMessage', '', {0,0,0}, data.message)
 end)
 
+RegisterNUICallback("enableCursor", function (data, cb)
+	enableCursor(data.cursor)
+end)
+
 
 
 --------------------------------------------------------------------------------
@@ -130,6 +139,16 @@ end)
 --								FUNCTIONS
 --
 --------------------------------------------------------------------------------
+function enableCursor(enable)
+    SetNuiFocus(enable)
+    cursor = enable
+
+    SendNUIMessage({
+        type = "enableCursor",
+        enable = enable
+    })
+end
+
 function IsPlayerPlayingAnimation()
 	if IsPlayerClimbing(PlayerId()) or IsPlayerDead(PlayerId()) or
 	IsPedCuffed(GetPlayerPed(-1)) or IsPedJumpingOutOfVehicle(GetPlayerPed(-1))
@@ -264,6 +283,11 @@ end
 --									EVENTS
 --
 --------------------------------------------------------------------------------
+RegisterNetEvent("ephone:log")
+AddEventHandler("ephone:log", function (str)
+	Citizen.Trace(str)
+end)
+
 RegisterNetEvent("ephone:enable")
 AddEventHandler("ephone:enable", function ()
 	enable_phone = true

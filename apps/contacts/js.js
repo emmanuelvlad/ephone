@@ -1,14 +1,12 @@
+var appName = "contacts"
+
 var maxContacts = 0
 
-var appName = "contacts"
 if (apps[appName].phoneIndex == null) {
-    apps[appName].phoneIndex = 1
+    apps[appName].phoneIndex = 0
 }
 
-$(function() {
-    contacts_init()
-    scrollTo()
-})
+
 
 function sort_apps(a, b) {
     return ($(b).data('index')) < ($(a).data('index')) ? 1 : -1
@@ -16,17 +14,26 @@ function sort_apps(a, b) {
 
 function scrollTo() {
     var target = $(".contact").eq(apps[appName].phoneIndex)
-    $("#contacts").scrollTop(target.index() * target.outerHeight())
+    $("#contacts").scrollTop((target.index() * target.outerHeight()) - 45)
 }
 
-function contacts_init() {
+apps[appName].init = function() {
     $("#phone-content").css("background-image", "none")
     $("#phone-content").css("background-color", "#fafafa")
     $("#contacts").find(".contact").each(function(index, element) {
         maxContacts = index
     })
     $("#contacts").find(".contact").eq(apps[appName].phoneIndex).addClass("selected")
+    scrollTo()
 }
+
+apps[appName].terminate = function () {
+}
+
+$(function() {
+    apps[appName].init()
+    scrollTo()
+})
 
 apps[appName].phoneUp = function() {
     $(".contact").eq(apps[appName].phoneIndex).removeClass("selected")

@@ -29,7 +29,7 @@ function showPage(page) {
 }
 
 apps[appName].init = function () {
-    $("#phone-content").css("background-image", "url('background.jpg')")
+    $("#phone-content").css("background-image", "url('../html/background.jpg')")
     $(".menu .application").sort(sort_apps).appendTo('.menu')
     if (apps[appName].pages == null) {
         $(".menu").find(".application").each(function(index, element) {

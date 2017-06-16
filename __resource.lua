@@ -31,8 +31,12 @@ files {
 }
 
 client_scripts {
-	"server.lua",
 	"main.lua",
 	"animation.lua",
 	"battery.lua"
 }
+
+server_scripts {
+	"server.lua"
+}
+

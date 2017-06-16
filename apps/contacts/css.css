@@ -1,37 +1,37 @@
-/*
-** ---------------------------------------------------------------------------
-**                                 CONTACTS
-** ---------------------------------------------------------------------------
-*/
-
-#contacts {
+#contacts
+{
     height: calc(100% - 35px);
     padding-top: 35px;
     background-color: red;
     overflow: hidden;
 }
 
-.contact {
+.contact
+{
     width: 100%;
     background-color: #fafafa;
     padding: 15px 5px 15px 5px;
     border-bottom: 1px solid #dadada;
 }
 
-.contact:nth-child(2n) {
+.contact:nth-child(2n)
+{
     background-color: #aaa;
 }
 
-.contact:nth-child(2n).selected, .contact.selected {
+.contact:nth-child(2n).selected, .contact.selected
+{
     background-color: #333;
     color: white;
 }
 
-.contact p {
+.contact p
+{
     margin: 0;
 }
 
-#add-contact {
+#add-contact
+{
     position: absolute;
     display: flex;
     justify-content: center;

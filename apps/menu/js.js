@@ -29,7 +29,7 @@ function showPage(page) {
 }
 
 apps[appName].init = function () {
-    $("#phone-content").css("background-image", "url('https://thechive.files.wordpress.com/2015/01/i-think-its-time-for-a-new-phone-background-50-photos-4.jpg')")
+    $("#phone-content").css("background-image", "url('background.jpg')")
     $(".menu .application").sort(sort_apps).appendTo('.menu')
     if (apps[appName].pages == null) {
         $(".menu").find(".application").each(function(index, element) {

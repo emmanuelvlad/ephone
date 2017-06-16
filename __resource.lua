@@ -8,6 +8,7 @@ files {
 	"html/index.html",
 	"html/main.js",
 	"html/main.css",
+	"html/background.jpg",
 
 	"html/cursor.png",
 	"html/pointer.png",

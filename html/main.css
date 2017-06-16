@@ -1,9 +1,11 @@
-html, body {
+html, body
+{
     font-family: "Raleway";
     overflow: hidden;
 }
 
-#container {
+#container
+{
     position: fixed;
     right: 0;
     bottom: 0px;
@@ -13,7 +15,8 @@ html, body {
     padding: 40px 15px 0 15px;
 }
 
-#phone {
+#phone
+{
     position: relative;
     display: inline-block;
     background-color: #1F2023;
@@ -27,7 +30,8 @@ html, body {
     border-right: 1px solid #65686E;
 }
 
-#phone:after {
+#phone:after
+{
     position: absolute;
     z-index: -1;
     content: '';
@@ -40,7 +44,8 @@ html, body {
     bottom: 0px;
 }
 
-#phone-content {
+#phone-content
+{
     position: relative;
     display: inline-block;
     background-color: #E2A9F3;
@@ -53,7 +58,8 @@ html, body {
     overflow: hidden;
 }
 
-#blackout {
+#blackout
+{
     background: black;
     height: 100%;
     width: 100%;
@@ -61,7 +67,8 @@ html, body {
     border-radius: 10px 10px 0 0;
 }
 
-#top-bar {
+#top-bar
+{
     position: absolute;
     top: 0;
     width: calc(100% - 10px);
@@ -153,9 +160,22 @@ html, body {
     border: 2px solid green;
 }
 
-
 .battery-bar
 {
     width: 100%;
     border: 1px solid red;
+}
+
+#cursor {
+    position: absolute;
+    z-index: 999;
+    display: none;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-text {
+    cursor: text;
 }

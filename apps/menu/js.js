@@ -5,6 +5,10 @@ var appsPerLine = 3
 
 var maxpage = 0
 
+if (apps[appName].getMenu == null) {
+    apps[appName].getMenu = false
+}
+
 if (apps[appName].phoneIndex == null) {
     apps[appName].phoneIndex = 0
 }
@@ -28,8 +32,15 @@ function showPage(page) {
     apps[appName].pageIndex = page
 }
 
+apps[appName].reset = function () {
+    $(".menu").empty()
+    $("#pagination").empty()
+    apps[appName].pages = null
+    apps[appName].maxpage = null
+    pages = []
+}
+
 apps[appName].init = function () {
-    $("#phone-content").css("background-image", "url('../html/background.jpg')")
     $(".menu .application").sort(sort_apps).appendTo('.menu')
     if (apps[appName].pages == null) {
         $(".menu").find(".application").each(function(index, element) {
@@ -59,14 +70,53 @@ apps[appName].init = function () {
 apps[appName].terminate = function () {
 }
 
+function getApp(apps, appid) {
+    var ret = null
+    $.each(apps, function(index, element) {
+        if (element.id === appid) {
+            ret = element
+        }
+    })
+    return ret
+}
+
 $(function() {
-    apps[appName].init()
+    $("#phone-content").css("background-image", "url('../html/background.jpg')")
+
+    if (!apps[appName].getMenu) {
+        sendData("getMenu", {})
+        apps[appName].getMenu = true
+    }
+
+    window.addEventListener("message", function(event) {
+        var data = event.data
+
+        if (data.menu && data.apps) {
+            apps[appName].reset()
+            $.each(data.menu, function(index, element) {
+                var app = getApp(data.apps, element.appid)
+                $(".menu").append(`
+                    <div class="application app-${app.name}" data-trigger="${app.name}" data-index="${element.index}">
+                        <div class="icon"><i class="material-icons">${app.icon}</i></div>
+                        <p>${app.display_name}</p>
+                    </div>
+                `)
+            })
+            apps[appName].init()
+        }
+    })
 })
 
 apps[appName].phoneUp = function() {
     $(".application").eq(apps[appName].phoneIndex).removeClass("selected")
-    if (apps[appName].phoneIndex - appsPerLine >= 0) {
-        apps[appName].phoneIndex -= appsPerLine
+    console.log("phoneup")
+    console.log(apps[appName].pages[0].apps)
+    if (apps[appName].phoneIndex - appsPerLine + ((apps[appName].pages[apps[appName].pageIndex].apps + 1) % appsPerLine) >= 0) {
+        if (apps[appName].phoneIndex - appsPerLine > appsPerLine) {
+            apps[appName].phoneIndex -= appsPerLine - ((apps[appName].pages[apps[appName].pageIndex].apps + 1) % appsPerLine)
+        } else {
+            apps[appName].phoneIndex -= appsPerLine
+        }
     }
     else {
         apps[appName].phoneIndex = (apps[appName].pages[apps[appName].pageIndex].apps) + ((apps[appName].phoneIndex % appsPerLine) + 1)
@@ -81,7 +131,11 @@ apps[appName].phoneDown = function() {
         apps[appName].phoneIndex += appsPerLine
     }
     else {
-        apps[appName].phoneIndex = (apps[appName].phoneIndex % appsPerLine)
+        if ((apps[appName].pages[apps[appName].phoneIndex].apps + 1) % 3 === 1) {
+            apps[appName].phoneIndex -= 1
+        } else {
+            apps[appName].phoneIndex = (apps[appName].phoneIndex % appsPerLine)
+        }
     }
     $(".application").eq(apps[appName].phoneIndex).addClass("selected")
     playSound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET")
@@ -101,7 +155,7 @@ apps[appName].phoneLeft = function() {
             apps[appName].phoneIndex -= 1
         }
         else {
-            apps[appName].phoneIndex = appsPerPage - 1
+            apps[appName].phoneIndex = apps[appName].pages[apps[appName].phoneIndex].apps + appsPerLine
         }
     }
     $(".application").eq(apps[appName].phoneIndex).addClass("selected")
@@ -135,10 +189,7 @@ apps[appName].phoneCancel = function() {
 }
 
 apps[appName].phoneSelect = function() {
-    var data = $(".application").eq(apps[appName].phoneIndex)
-
-    //sendData("app-" + data.data("trigger"), data.data("return"));
-    showApp(data.data("trigger"))
+    showApp($(".application").eq(apps[appName].phoneIndex).data("trigger"))
     playSound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
 }
 

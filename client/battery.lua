@@ -9,10 +9,10 @@ battery = 100 -- Percentage at connection // Warning: If battery is disabled and
 
 is_baterry_in_charge = false
 
-local autoCharge = 1 -- How many seconds it takes to the phone to charge without being used of 1%
+local autoCharge = 30 -- How many seconds it takes to the phone to charge without being used of 1%
 
-local autoDischarge = 30 -- How many seconds it takes to the phone to discharge without being used of 1% // Default: 60 seconds
-local DischargeInUse = 1 -- How many seconds it takes to the phone to discharge of 1%
+local autoDischarge = 120 -- How many seconds it takes to the phone to discharge without being used of 1% // Default: 60 seconds
+local DischargeInUse = 30 -- How many seconds it takes to the phone to discharge of 1%
 
 local enable_charger_connection_sound = true -- Enable or disable
 local enable_low_battery_sound = true -- Enable or disable

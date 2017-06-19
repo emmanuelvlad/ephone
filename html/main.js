@@ -21,7 +21,7 @@ $(function() {
     init()
 
     window.addEventListener("message", function(event) {
-        var data = event.data;
+        var data = event.data
 
         if (data.date) {
             updateDate(data.date)

@@ -29,6 +29,9 @@ files {
 	"apps/contacts/html.html",
 	"apps/contacts/css.css",
 
+	"apps/contacts/creator/css.css",
+	"apps/contacts/creator/html.html",
+
 	"apps/navigator/js.js",
 	"apps/navigator/html.html",
 	"apps/navigator/css.css"

@@ -10,11 +10,6 @@ require "resources/mysql-async/lib/MySQL"
 --									EVENTS
 --
 --------------------------------------------------------------------------------
-AddEventHandler('chatMessageEntered', function(name, color, message)
-    addUser(source)
-    userAddApp(source, "navigator")
-end)
-
 AddEventHandler('playerConnecting', function(playerName, setKickReason)
     addUser(source)
 end)

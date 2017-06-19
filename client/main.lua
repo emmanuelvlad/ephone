@@ -64,10 +64,10 @@ Citizen.CreateThread(function()
 				ePhoneHide()
 			end
 			if not inputBlocked then
-				if IsControlJustPressed(3, 172) then
+				if IsControlJustPressed(3, 172) or IsControlJustPressed(3, 181) then
 					ePhoneUp()
 					-- TriggerServerEvent('okk')
-				elseif IsControlJustPressed(3, 173) then
+				elseif IsControlJustPressed(3, 173) or IsControlJustPressed(3, 180) then
 					ePhoneDown()
 				elseif IsControlJustPressed(3, 174) then
 					ePhoneLeft()

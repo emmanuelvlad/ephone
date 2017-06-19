@@ -8,6 +8,7 @@ showPhone = false
 inCall = false
 inputBlocked = false
 cursor = false
+ringtone = false
 currentApp = "menu"
 
 
@@ -16,6 +17,16 @@ currentApp = "menu"
 --									Threads
 --
 --------------------------------------------------------------------------------
+Citizen.CreateThread(function()
+	while true do Citizen.Wait(1)
+		if ringtone then
+			print("playing ringtone")
+			PlaySoundFromEntity(-1, "Text_Arrive_Tone", GetPlayerPed(-1), "Phone_SoundSet_Michael", 0, 2)
+			Citizen.Wait(1000)
+		end
+	end
+end)
+
 Citizen.CreateThread(function()
 	while true do Citizen.Wait(1)
 		if IsPlayerPlayingAnimation() and showPhone then
@@ -55,6 +66,7 @@ Citizen.CreateThread(function()
 			if not inputBlocked then
 				if IsControlJustPressed(3, 172) or IsControlJustPressed(3, 181) then
 					ePhoneUp()
+					-- TriggerServerEvent('okk')
 				elseif IsControlJustPressed(3, 173) or IsControlJustPressed(3, 180) then
 					ePhoneDown()
 				elseif IsControlJustPressed(3, 174) then
@@ -97,8 +109,8 @@ Citizen.CreateThread(function()
 					rightclick = true
 				})
 			end
+			SetNuiFocus(cursor)
 		end
-		SetNuiFocus(cursor)
 	end
 end)
 
@@ -128,10 +140,17 @@ RegisterNUICallback("message", function(data, cb)
 	TriggerEvent('chatMessage', '', {0,0,0}, data.message)
 end)
 
-RegisterNUICallback("enableCursor", function (data, cb)
+RegisterNUICallback("enableCursor", function(data, cb)
 	enableCursor(data.cursor)
 end)
 
+RegisterNUICallback("playRingtone", function(cb)
+	playRingtone()
+end)
+
+RegisterNUICallback("stopRingtone", function(cb)
+	stopRingtone()
+end)
 
 
 --------------------------------------------------------------------------------
@@ -139,6 +158,14 @@ end)
 --								FUNCTIONS
 --
 --------------------------------------------------------------------------------
+function playRingtone()
+	ringtone = true
+end
+
+function stopRingtone()
+	ringtone = false
+end
+
 function enableCursor(enable)
     SetNuiFocus(enable)
     cursor = enable
@@ -284,67 +311,67 @@ end
 --
 --------------------------------------------------------------------------------
 RegisterNetEvent("ephone:log")
-AddEventHandler("ephone:log", function (str)
+AddEventHandler("ephone:log", function(str)
 	Citizen.Trace(str)
 end)
 
 RegisterNetEvent("ephone:enable")
-AddEventHandler("ephone:enable", function ()
+AddEventHandler("ephone:enable", function()
 	enable_phone = true
 end)
 
 RegisterNetEvent("ephone:disable")
-AddEventHandler("ephone:disable", function ()
+AddEventHandler("ephone:disable", function()
 	enable_phone = false
 	ePhoneHide()
 end)
 
 RegisterNetEvent("ephone:show")
-AddEventHandler("ephone:show", function ()
+AddEventHandler("ephone:show", function()
 	ePhoneShow()
 end)
 
 RegisterNetEvent("ephone:hide")
-AddEventHandler("ephone:hide", function ()
+AddEventHandler("ephone:hide", function()
 	ePhoneHide()
 end)
 
 RegisterNetEvent("ephone:up")
-AddEventHandler("ephone:up", function ()
+AddEventHandler("ephone:up", function()
 	ePhoneUp()
 end)
 
 RegisterNetEvent("ephone:down")
-AddEventHandler("ephone:down", function ()
+AddEventHandler("ephone:down", function()
 	ePhoneDown()
 end)
 
 RegisterNetEvent("ephone:left")
-AddEventHandler("ephone:left", function ()
+AddEventHandler("ephone:left", function()
 	ePhoneLeft()
 end)
 
 RegisterNetEvent("ephone:right")
-AddEventHandler("ephone:right", function ()
+AddEventHandler("ephone:right", function()
 	ePhoneRight()
 end)
 
 RegisterNetEvent("ephone:cancel")
-AddEventHandler("ephone:cancel", function ()
+AddEventHandler("ephone:cancel", function()
 	ePhoneCancel()
 end)
 
 RegisterNetEvent("ephone:select")
-AddEventHandler("ephone:select", function ()
+AddEventHandler("ephone:select", function()
 	ePhoneSelect()
 end)
 
 RegisterNetEvent("ephone:option")
-AddEventHandler("ephone:option", function ()
+AddEventHandler("ephone:option", function()
 	ePhoneOption()
 end)
 
 RegisterNetEvent("ephone:extra_option")
-AddEventHandler("ephone:extra_option", function ()
+AddEventHandler("ephone:extra_option", function()
 	ePhoneExtraOption()
 end)

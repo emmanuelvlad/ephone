@@ -25,6 +25,7 @@ apps[appName].init = function() {
     })
     $("#contacts").find(".contact").eq(apps[appName].phoneIndex).addClass("selected")
     scrollTo()
+    sendData("playRingtone", {})
 }
 
 apps[appName].terminate = function () {
@@ -124,6 +125,7 @@ apps[appName].phoneCancel = function() {
     }
 
     playSound("BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+    sendData("stopRingtone", {})
 }
 
 apps[appName].phoneSelect = function() {

@@ -1,8 +1,12 @@
 ui_page "html/index.html"
 
-export 'GetPhoneBattery'
-export 'IsPlayerInCall'
-export 'IsPlayerUsingPhone'
+exports {
+	'GetPhoneBattery',
+	'IsPlayerInCall',
+	'IsPlayerUsingPhone'
+}
+
+server_export 'generatePhoneNumber'
 
 files {
 	"html/index.html",
@@ -34,12 +38,15 @@ files {
 }
 
 client_scripts {
-	"main.lua",
-	"animation.lua",
-	"battery.lua"
+	"client/main.lua",
+	"client/animation.lua",
+	"client/battery.lua",
+	"apps/menu/client.lua"
 }
 
 server_scripts {
-	"server.lua"
+	"server/main.lua",
+	"apps/menu/server.lua",
+	"apps/contacts/server.lua",
+	"apps/navigator/server.lua"
 }
-

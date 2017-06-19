@@ -1,0 +1,29 @@
+#creator
+{
+    height: calc(100% - 35px);
+    padding-top: 35px;
+    background-color: #000000;
+    overflow: hidden;
+}
+
+.name
+{
+    width:75%;
+    margin: 15% 12.5% 5%;
+    height: 10%;
+    border-radius: 2px;
+}
+
+.number
+{
+    width:75%;
+    margin: 5% 12.5%;
+    height: 10%;
+}
+
+.contact-add {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 0 12.5% 12.5% 0;
+}

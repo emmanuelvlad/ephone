@@ -36,6 +36,9 @@ $(function() {
 })
 
 apps[appName].phoneUp = function() {
+    if ($("#add-contact").hasClass("selected")) {
+        $("#add-contact.selected").removeClass("selected")
+    }
     $(".contact").eq(apps[appName].phoneIndex).removeClass("selected")
     if (apps[appName].phoneIndex - 1 >= 0) {
         apps[appName].phoneIndex -= 1
@@ -49,6 +52,9 @@ apps[appName].phoneUp = function() {
 }
 
 apps[appName].phoneDown = function() {
+    if ($("#add-contact").hasClass("selected")) {
+        $("#add-contact.selected").removeClass("selected")
+    }
     $(".contact").eq(apps[appName].phoneIndex).removeClass("selected")
     if (apps[appName].phoneIndex + 1 <= maxContacts) {
         apps[appName].phoneIndex += 1
@@ -62,24 +68,44 @@ apps[appName].phoneDown = function() {
 }
 
 apps[appName].phoneLeft = function() {
-
+    if ($("#add-contact").hasClass("selected")) {
+        $("#add-contact.selected").removeClass("selected")
+        $(".contact").eq(apps[appName].phoneIndex).addClass("selected")
+    }
     playSound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 }
 
 apps[appName].phoneRight = function() {
-
+    $("#add-contact").addClass("selected")
+    $(".contact.selected").removeClass("selected")
     playSound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 }
 
 apps[appName].phoneCancel = function() {
-    $(".contact").eq(apps[appName].phoneIndex).removeClass("selected")
-    showApp("menu")
+    if (apps[appName].sections["creator"].displayed) {
+        $("#creator").remove();
+        $("#phone-content").append(apps[appName].data);
+        apps[appName].sections["creator"].displayed = false;
+        $("#add-contact").removeClass("selected");
+        $("#contacts").find(".contact").eq(apps[appName].phoneIndex).addClass("selected");
+    } else {
+        $(".contact").eq(apps[appName].phoneIndex).removeClass("selected")
+        showApp("menu")
+    }
+
     playSound("BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 }
 
 apps[appName].phoneSelect = function() {
-    var data = $(".contact").eq(apps[appName].phoneIndex)
+    if ($("#add-contact").hasClass("selected")) {
+        $("#contacts").remove();
+        $("#phone-content").append(apps[appName].sections["creator"].data);
+        apps[appName].sections["creator"].displayed = true;
+    } else {
+        var data = $(".contact").eq(apps[appName].phoneIndex)
 
-    //sendData("app-" + data.data("trigger"), data.data("return"));
+        //sendData("app-" + data.data("trigger"), data.data("return"));
+    }
+
     playSound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
 }

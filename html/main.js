@@ -95,7 +95,6 @@ function init() {
         var name = $(this).data("app")
 
         apps[name] = {}
-        apps[name].sections = [];
 
         $(this).load(`../apps/${name}/html.html`, function(response, status, xhr) {
             if (status !== "error") {
@@ -104,22 +103,6 @@ function init() {
         })
         apps[name].data = $(this).detach()
         apps[name].init = false
-
-        $(this).children("*[data-app-section]").each(function (element, index) {
-            var section_name = $(this).data("app-section");
-
-            apps[name].sections[section_name] = {};
-
-            $(this).load(`../apps/${name}/${section_name}/html.html`, function(response, status, xhr) {
-                if (status !== "error") {
-                    $(this).html(response)
-                }
-            })
-
-            apps[name].sections[section_name].data = $(this).detach();
-            apps[name].sections[section_name].displayed = false;
-
-        })
     })
     showApp("menu")
 }

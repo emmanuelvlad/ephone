@@ -152,6 +152,7 @@ apps[appName].phoneSelect = function() {
             $(".section-content").children().eq(apps[appName].sections["creator"].elementIndex).addClass("focus");
         } else {
             var data = $(".contact").eq(apps[appName].phoneIndex)
+        }
 
         //sendData("app-" + data.data("trigger"), data.data("return"));
     }

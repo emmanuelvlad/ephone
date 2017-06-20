@@ -5,14 +5,14 @@
 --------------------------------------------------------------------------------
 enable_battery = true -- Enable or disable the addon
 
-battery = 100 -- Percentage at connection // Warning: If battery is disabled and set at 0 the player will cannot open his phone
+battery = 100 -- Percentage at connection // Warning: If battery is disabled and set at 0 the player will cannot use his phone
 
 is_baterry_in_charge = false
 
 local autoCharge = 30 -- How many seconds it takes to the phone to charge without being used of 1%
 
 local autoDischarge = 120 -- How many seconds it takes to the phone to discharge without being used of 1% // Default: 60 seconds
-local DischargeInUse = 30 -- How many seconds it takes to the phone to discharge of 1%
+local DischargeInUse = 1 -- How many seconds it takes to the phone to discharge of 1%
 
 local enable_charger_connection_sound = true -- Enable or disable
 local enable_low_battery_sound = true -- Enable or disable
@@ -37,7 +37,7 @@ local chargeSoundSent = 0
 --								FUNCTIONS
 --
 --------------------------------------------------------------------------------
-function updateBattery(battery)
+function updateBattery()
 	if battery <= 15 and battery > 0 and battery % 5 == 0 then -- if Battery == Trigger low sound
 		if is_baterry_in_charge then -- If player is charging
 			if chargeSoundSent == 0 and enable_charger_connection_sound then
@@ -96,6 +96,7 @@ function updateBattery(battery)
 			battery = battery
 		})
 	end
+	TriggerServerEvent('ephone:updateBattery', battery)
 end
 
 function drawTxt(x,y,scale, text, r,g,b,font)
@@ -113,7 +114,7 @@ function replaceBatteryField(string)
 	return string.gsub(string, "${battery}", tostring(battery))
 end
 
-function GetPhoneBattery()
+function getBattery()
 	return battery
 end
 
@@ -124,9 +125,11 @@ end
 --
 --------------------------------------------------------------------------------
 Citizen.CreateThread(function()
+	TriggerServerEvent('ephone:getBattery')
+	--Citizen.Wait(1000)
     while true do Citizen.Wait(1)
 		if enable_battery and enable_phone then
-			updateBattery(battery)
+			updateBattery()
 			if is_baterry_in_charge and enable_charging_battery_message then
 				drawTxt(0.80, 0.96, 0.4, replaceBatteryField(charging_battery_message), 255, 255, 255, 0)
 			elseif not is_baterry_in_charge then
@@ -195,6 +198,11 @@ end)
 --									EVENTS
 --
 --------------------------------------------------------------------------------
+RegisterNetEvent("ephone:loadBattery")
+AddEventHandler("ephone:loadBattery", function(nb)
+	battery = nb
+end)
+
 RegisterNetEvent("ephone:battery_in_charge")
 AddEventHandler("ephone:battery_in_charge", function()
 	is_baterry_in_charge = true

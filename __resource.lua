@@ -1,7 +1,7 @@
 ui_page "html/index.html"
 
 exports {
-	'GetPhoneBattery',
+	'getBattery',
 	'IsPlayerInCall',
 	'IsPlayerUsingPhone'
 }

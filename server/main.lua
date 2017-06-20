@@ -1,6 +1,8 @@
 local number_length = 10 -- 19 Max !! NEVER GO BELOW YOUR PLAYER LIST
 local number_prefix = 213
 
+local battery_list = {}
+
 apps = {}
 
 require "resources/mysql-async/lib/MySQL"
@@ -10,8 +12,18 @@ require "resources/mysql-async/lib/MySQL"
 --									EVENTS
 --
 --------------------------------------------------------------------------------
+AddEventHandler('chatMessageEntered', function(name, color, message)
+end)
+
 AddEventHandler('playerConnecting', function(playerName, setKickReason)
     addUser(source)
+end)
+
+AddEventHandler('playerDropped', function(reason)
+    getUserId(source, function(uid)
+        updateBattery(uid, battery_list[source])
+        battery_list[source] = nil
+    end)
 end)
 
 AddEventHandler('onResourceStart', function(resource)
@@ -21,7 +33,28 @@ AddEventHandler('onResourceStart', function(resource)
 end)
 
 AddEventHandler('onResourceStop', function(resource)
+    if resource == "ephone" then
+        for k, v in pairs(battery_list) do
+            getUserId(k, function(uid)
+                updateBattery(uid, v)
+                battery_list[k] = nil
+            end)
+        end
+    end
+end)
 
+RegisterServerEvent('ephone:getBattery')
+AddEventHandler('ephone:getBattery', function()
+    getUserId(source, function(uid)
+        getBattery(uid, function(data)
+            TriggerClientEvent('ephone:loadBattery', source, data)
+        end)
+    end)
+end)
+
+RegisterServerEvent('ephone:updateBattery')
+AddEventHandler('ephone:updateBattery', function(battery)
+    battery_list[source] = battery
 end)
 
 RegisterServerEvent('ephone:addApp')
@@ -111,10 +144,11 @@ end)
 --
 --------------------------------------------------------------------------------
 function setupPhone()
-    MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `ephone_users` (`id` int(11) NOT NULL AUTO_INCREMENT, `playerid` varchar(255) NOT NULL, `phone_number` bigint(20) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;", {}, function(changes)
+    MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `ephone_users` (`id` int(11) NOT NULL AUTO_INCREMENT, `playerid` varchar(255) NOT NULL, `phone_number` bigint(20) NOT NULL, `battery` int(11) NOT NULL DEFAULT '100', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;", {}, function(changes)
         checkColumn("ephone_users", "id", "int(11) NOT NULL AUTO_INCREMENT")
         checkColumn("ephone_users", "playerid", "varchar(255) NOT NULL AFTER `id`")
         checkColumn("ephone_users", "phone_number", "bigint(20) NOT NULL AFTER `playerid`")
+        checkColumn("ephone_users", "battery", "int(11) NOT NULL DEFAULT '100' AFTER `phone_number`")
     end)
 
     MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `ephone_groups` (`id` int(11) NOT NULL AUTO_INCREMENT, `name` varchar(30) NOT NULL, `phone_number` bigint(20) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;", {}, function(changes)
@@ -301,4 +335,14 @@ end
 
 function deleteGroup(name)
     MySQL.Async.execute("DELETE FROM ephone_groups WHERE name=@name", {['@name'] = name})
+end
+
+function getBattery(uid, callback)
+    MySQL.Async.fetchAll("SELECT * FROM ephone_users WHERE id = @uid", {['@uid'] = uid}, function(data)
+        callback(data[1].battery)
+    end)
+end
+
+function updateBattery(uid, battery)
+    MySQL.Async.execute("UPDATE ephone_users SET battery=@battery WHERE id = @id", {['@battery'] = battery,  ['@id'] = uid})
 end

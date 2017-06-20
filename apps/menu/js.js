@@ -5,8 +5,8 @@ var appsPerLine = 3
 
 var maxpage = 0
 
-if (apps[appName].getMenu == null) {
-    apps[appName].getMenu = false
+if (apps[appName].firstLoad == null) {
+    apps[appName].firstLoad = true
 }
 
 if (apps[appName].phoneIndex == null) {
@@ -70,6 +70,22 @@ apps[appName].init = function () {
 apps[appName].terminate = function () {
 }
 
+apps[appName].update = function (data) {
+    if (data.menu && data.apps) {
+        apps[appName].reset()
+        $.each(data.menu, function(index, element) {
+            var app = getApp(data.apps, element.appid)
+            $(".menu").append(`
+                <div class="application app-${app.name}" data-trigger="${app.name}" data-index="${element.index}">
+                    <div class="icon"><i class="material-icons">${app.icon}</i></div>
+                    <p>${app.display_name}</p>
+                </div>
+            `)
+        })
+        apps[appName].init()
+    }
+}
+
 function getApp(apps, appid) {
     var ret = null
     $.each(apps, function(index, element) {
@@ -82,35 +98,11 @@ function getApp(apps, appid) {
 
 $(function() {
     $("#phone-content").css("background-image", "url('../html/background.jpg')")
-
-    if (!apps[appName].getMenu) {
-        sendData("getMenu", {})
-        apps[appName].getMenu = true
-    }
-
-    window.addEventListener("message", function(event) {
-        var data = event.data
-
-        if (data.menu && data.apps) {
-            apps[appName].reset()
-            $.each(data.menu, function(index, element) {
-                var app = getApp(data.apps, element.appid)
-                $(".menu").append(`
-                    <div class="application app-${app.name}" data-trigger="${app.name}" data-index="${element.index}">
-                        <div class="icon"><i class="material-icons">${app.icon}</i></div>
-                        <p>${app.display_name}</p>
-                    </div>
-                `)
-            })
-            apps[appName].init()
-        }
-    })
+    if (apps[appName].firstLoad) { sendData("getMenu", {}); apps[appName].firstLoad = false }
 })
 
 apps[appName].phoneUp = function() {
     $(".application").eq(apps[appName].phoneIndex).removeClass("selected")
-    console.log("phoneup")
-    console.log(apps[appName].pages[0].apps)
     if (apps[appName].phoneIndex - appsPerLine + ((apps[appName].pages[apps[appName].pageIndex].apps + 1) % appsPerLine) >= 0) {
         if (apps[appName].phoneIndex - appsPerLine > appsPerLine) {
             apps[appName].phoneIndex -= appsPerLine - ((apps[appName].pages[apps[appName].pageIndex].apps + 1) % appsPerLine)
@@ -123,6 +115,10 @@ apps[appName].phoneUp = function() {
     }
     $(".application").eq(apps[appName].phoneIndex).addClass("selected")
     playSound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+}
+
+apps[appName].phoneWheelUp = function() {
+    apps[appName].phoneUp()
 }
 
 apps[appName].phoneDown = function() {
@@ -139,6 +135,10 @@ apps[appName].phoneDown = function() {
     }
     $(".application").eq(apps[appName].phoneIndex).addClass("selected")
     playSound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+}
+
+apps[appName].phoneWheelDown = function() {
+    apps[appName].phoneDown()
 }
 
 apps[appName].phoneLeft = function() {

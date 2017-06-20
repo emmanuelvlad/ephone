@@ -2,27 +2,26 @@
 {
     height: calc(100% - 35px);
     padding-top: 35px;
-    background-color: red;
+    background-color: #F4F4F4;
     overflow: hidden;
 }
 
 .contact
 {
     width: 100%;
-    background-color: #fafafa;
-    padding: 15px 5px 15px 5px;
+    background-color: #F2F2F2;
+    padding: 10px 5px 10px 5px;
     border-bottom: 1px solid #dadada;
-}
-
-.contact:nth-child(2n)
-{
-    background-color: #aaa;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .contact:nth-child(2n).selected, .contact.selected
 {
-    background-color: #333;
-    color: white;
+    background-color: #aaa;
+    color: #fff;
+    font-weight: bold;
 }
 
 .contact p
@@ -50,4 +49,19 @@
 #add-contact.selected
 {
     background-color: rgba(97, 157, 255, 0.59);
+}
+
+.avatar
+{
+    box-sizing: border-box;
+    vertical-align: middle;
+    border-radius: 15px;
+    border: 2px solid #333;
+    width: 40px;
+    height: 40px;
+}
+
+.name
+{
+    display: inline-block;
 }

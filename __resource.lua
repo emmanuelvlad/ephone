@@ -41,7 +41,8 @@ client_scripts {
 	"client/main.lua",
 	"client/animation.lua",
 	"client/battery.lua",
-	"apps/menu/client.lua"
+	"apps/menu/client.lua",
+	"apps/contacts/client.lua"
 }
 
 server_scripts {

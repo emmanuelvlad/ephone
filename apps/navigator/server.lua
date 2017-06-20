@@ -20,7 +20,7 @@ AddEventHandler('onResourceStart', function(resource)
 end)
 
 AddEventHandler('playerConnecting', function(playerName, setKickReason)
-    TriggerEvent('ephone:userAddApp', source, app_name)
+    TriggerClientEvent('ephone:userAddApp', source, app_name)
 end)
 
 

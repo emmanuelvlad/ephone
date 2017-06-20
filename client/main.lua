@@ -43,10 +43,13 @@ Citizen.CreateThread(function()
 
 		-- Test things
 		if showPhone then
-			SetPedCanPlayGestureAnims(GetPlayerPed(-1), false)
-			SetPedCanPlayVisemeAnims(GetPlayerPed(-1), false)
-		else
-			SetPedCanPlayGestureAnims(GetPlayerPed(-1), true)
+			DisableControlAction(0, 142, cursor)
+			DisableControlAction(0, 106, cursor)
+			DisableControlAction(0, 16, cursor)
+			DisableControlAction(0, 17, cursor)
+			DisableControlAction(0, 85, cursor)
+			DisableControlAction(0, 99, cursor)
+			DisableControlAction(0, 100, cursor)
 		end
 
 		-- Charge event
@@ -64,11 +67,14 @@ Citizen.CreateThread(function()
 				ePhoneHide()
 			end
 			if not inputBlocked then
-				if IsControlJustPressed(3, 172) or IsControlJustPressed(3, 181) then
+				if IsControlJustPressed(3, 172) then
 					ePhoneUp()
-					-- TriggerServerEvent('okk')
-				elseif IsControlJustPressed(3, 173) or IsControlJustPressed(3, 180) then
+				elseif IsControlJustPressed(3, 181) then
+					ePhoneWheelUp()
+				elseif IsControlJustPressed(3, 173) then
 					ePhoneDown()
+				elseif IsControlJustPressed(3, 180) then
+					ePhoneWheelDown()
 				elseif IsControlJustPressed(3, 174) then
 					ePhoneLeft()
 				elseif IsControlJustPressed(3, 175) then
@@ -97,13 +103,6 @@ Citizen.CreateThread(function()
 		if cursor then
 			DisableControlAction(0, 1, cursor)
 			DisableControlAction(0, 2, cursor)
-			DisableControlAction(0, 142, cursor)
-			DisableControlAction(0, 106, cursor)
-			DisableControlAction(0, 16, cursor)
-			DisableControlAction(0, 17, cursor)
-			DisableControlAction(0, 85, cursor)
-			DisableControlAction(0, 99, cursor)
-			DisableControlAction(0, 100, cursor)
 			if IsDisabledControlJustReleased(0, 142) then
 				SendNUIMessage({
 					rightclick = true
@@ -231,10 +230,26 @@ function ePhoneUp()
 	end
 end
 
+function ePhoneWheelUp()
+	if showPhone and battery > 0 then
+		SendNUIMessage({
+			wheelup = true
+		})
+	end
+end
+
 function ePhoneDown()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
 			down = true
+		})
+	end
+end
+
+function ePhoneWheelDown()
+	if showPhone and battery > 0 then
+		SendNUIMessage({
+			wheeldown = true
 		})
 	end
 end
@@ -341,9 +356,20 @@ AddEventHandler("ephone:up", function()
 	ePhoneUp()
 end)
 
+RegisterNetEvent("ephone:wheelup")
+AddEventHandler("ephone:wheelup", function()
+	ePhoneWheelUp()
+end)
+
+
 RegisterNetEvent("ephone:down")
 AddEventHandler("ephone:down", function()
 	ePhoneDown()
+end)
+
+RegisterNetEvent("ephone:wheeldown")
+AddEventHandler("ephone:wheeldown", function()
+	ePhoneWheelDown()
 end)
 
 RegisterNetEvent("ephone:left")
@@ -374,4 +400,19 @@ end)
 RegisterNetEvent("ephone:extra_option")
 AddEventHandler("ephone:extra_option", function()
 	ePhoneExtraOption()
+end)
+
+RegisterNetEvent('ephone:changePhoneNumber')
+AddEventHandler('ephone:changePhoneNumber', function(new_phone_number)
+	TriggerServerEvent('ephone:changePhoneNumber', new_phone_number)
+end)
+
+RegisterNetEvent('ephone:joinGroup')
+AddEventHandler('ephone:joinGroup', function(name)
+	TriggerServerEvent('ephone:joinGroup', name)
+end)
+
+RegisterNetEvent('ephone:leaveGroup')
+AddEventHandler('ephone:leaveGroup', function(name)
+	TriggerServerEvent('ephone:leaveGroup', name)
 end)

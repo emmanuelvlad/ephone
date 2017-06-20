@@ -2,6 +2,7 @@ var charger_connection_sound = "chargerConnection.ogg" // .ogg files please
 var low_battery_sound = "lowBattery.ogg" // .ogg files please
 
 var apps = []
+var update = []
 
 var currentApp = "menu"
 
@@ -17,8 +18,18 @@ function sendMessage(string) {
     sendData("message", {message: string.toString()});
 }
 
+function checkUpdate() {
+    if (update[currentApp]) {
+        apps[currentApp].update(update[currentApp].data)
+        update[currentApp] = null
+    }
+}
+
 $(function() {
     init()
+
+    checkUpdate()
+    setInterval(checkUpdate, 100)
 
     window.addEventListener("message", function(event) {
         var data = event.data
@@ -54,6 +65,10 @@ $(function() {
             playSound("Put_Away", "Phone_SoundSet_Michael")
         }
 
+        if (data.update) {
+            update[data.update.name] = data.update
+        }
+
         if (data.select) {
             apps[currentApp].phoneSelect()
         }
@@ -63,8 +78,14 @@ $(function() {
         else if (data.up) {
             apps[currentApp].phoneUp()
         }
+        else if (data.wheelup) {
+            apps[currentApp].phoneWheelUp()
+        }
         else if (data.down) {
             apps[currentApp].phoneDown()
+        }
+        else if (data.wheeldown) {
+            apps[currentApp].phoneWheelDown()
         }
         else if (data.left) {
             apps[currentApp].phoneLeft()

@@ -7,14 +7,12 @@
 * Multiple groups per user
 * New functions and events for appmakers (todo: List of functions and events)
 
-----------
 
 ## 0.0.5 - (19 JUNE 2017)
 ### Added
 * [MySQL Async compability](https://github.com/brouznouf/fivem-mysql-async)
 * New functions and events for appmakers
 
-----------
 
 ## 0.0.4 - (16 JUNE 2017)
 ### Added
@@ -22,7 +20,6 @@
 * App: Navigator (https://youtu.be/RDUxCtGloD0)
   * Just a web browser interface for now
 
-----------
 
 ## 0.0.3 - (30 MAY 2017)
 ### Changed
@@ -34,7 +31,6 @@
 * App: Menu
   * Now supports multiple pages
 
-----------
 
 ## 0.0.2 - (12 MAY 2017)
 ### Added
@@ -48,7 +44,6 @@
   * battery_in_charge
   * battery_not_in_charge
 
-----------
 
 ## 0.0.1 - (11 MAY 2017)
 ### Added

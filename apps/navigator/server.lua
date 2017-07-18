@@ -1,5 +1,3 @@
-require "resources/mysql-async/lib/MySQL"
-
 local app_name = "navigator"
 local app_display_name = "Browser"
 local app_description = ""

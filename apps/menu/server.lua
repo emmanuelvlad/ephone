@@ -1,5 +1,3 @@
-require "resources/mysql-async/lib/MySQL"
-
 local app_name = "menu"
 local app_display_name = ""
 local app_description = ""
@@ -59,10 +57,12 @@ end)
 --
 --------------------------------------------------------------------------------
 apps[app_name].init = function ()
-    MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `ephone_app_menu` (`user` int(11) NOT NULL, `appid` int(11) NOT NULL, `index` int(11) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;", {}, function(changes)
-        checkColumn("ephone_app_menu", "user", "int(11) NOT NULL")
-        checkColumn("ephone_app_menu", "appid", "int(11) NOT NULL AFTER `user`")
-        checkColumn("ephone_app_menu", "index", "int(11) NOT NULL AFTER `appid`")
+    AddEventHandler('onMySQLReady', function ()
+        MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `ephone_app_menu` (`user` int(11) NOT NULL, `appid` int(11) NOT NULL, `index` int(11) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;", {}, function(changes)
+            checkColumn("ephone_app_menu", "user", "int(11) NOT NULL")
+            checkColumn("ephone_app_menu", "appid", "int(11) NOT NULL AFTER `user`")
+            checkColumn("ephone_app_menu", "index", "int(11) NOT NULL AFTER `appid`")
+        end)
     end)
 end
 

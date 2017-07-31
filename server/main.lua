@@ -5,8 +5,6 @@ local battery_list = {}
 
 apps = {}
 
-require "resources/mysql-async/lib/MySQL"
-
 --------------------------------------------------------------------------------
 --
 --									EVENTS
@@ -144,30 +142,32 @@ end)
 --
 --------------------------------------------------------------------------------
 function setupPhone()
-    MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `ephone_users` (`id` int(11) NOT NULL AUTO_INCREMENT, `playerid` varchar(255) NOT NULL, `phone_number` bigint(20) NOT NULL, `battery` int(11) NOT NULL DEFAULT '100', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;", {}, function(changes)
-        checkColumn("ephone_users", "id", "int(11) NOT NULL AUTO_INCREMENT")
-        checkColumn("ephone_users", "playerid", "varchar(255) NOT NULL AFTER `id`")
-        checkColumn("ephone_users", "phone_number", "bigint(20) NOT NULL AFTER `playerid`")
-        checkColumn("ephone_users", "battery", "int(11) NOT NULL DEFAULT '100' AFTER `phone_number`")
-    end)
+    AddEventHandler('onMySQLReady', function ()
+        MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `ephone_users` (`id` int(11) NOT NULL AUTO_INCREMENT, `playerid` varchar(255) NOT NULL, `phone_number` bigint(20) NOT NULL, `battery` int(11) NOT NULL DEFAULT '100', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;", {}, function(changes)
+            checkColumn("ephone_users", "id", "int(11) NOT NULL AUTO_INCREMENT")
+            checkColumn("ephone_users", "playerid", "varchar(255) NOT NULL AFTER `id`")
+            checkColumn("ephone_users", "phone_number", "bigint(20) NOT NULL AFTER `playerid`")
+            checkColumn("ephone_users", "battery", "int(11) NOT NULL DEFAULT '100' AFTER `phone_number`")
+        end)
 
-    MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `ephone_groups` (`id` int(11) NOT NULL AUTO_INCREMENT, `name` varchar(30) NOT NULL, `phone_number` bigint(20) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;", {}, function(changes)
-        checkColumn("ephone_groups", "id", "int(11) NOT NULL AUTO_INCREMENT")
-        checkColumn("ephone_groups", "name", "varchar(30) NOT NULL AFTER `id`")
-        checkColumn("ephone_groups", "phone_number", "bigint(20) NOT NULL AFTER `name`")
-    end)
+        MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `ephone_groups` (`id` int(11) NOT NULL AUTO_INCREMENT, `name` varchar(30) NOT NULL, `phone_number` bigint(20) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;", {}, function(changes)
+            checkColumn("ephone_groups", "id", "int(11) NOT NULL AUTO_INCREMENT")
+            checkColumn("ephone_groups", "name", "varchar(30) NOT NULL AFTER `id`")
+            checkColumn("ephone_groups", "phone_number", "bigint(20) NOT NULL AFTER `name`")
+        end)
 
-    MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `ephone_app` (`id` int(11) NOT NULL AUTO_INCREMENT, `name` varchar(20) NOT NULL, `display_name` varchar(20) NOT NULL, `description` text NOT NULL, `icon` varchar(20) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;", {}, function(changes)
-        checkColumn("ephone_app", "id", "int(11) NOT NULL AUTO_INCREMENT")
-        checkColumn("ephone_app", "name", "varchar(20) NOT NULL AFTER `id`")
-        checkColumn("ephone_app", "display_name", "varchar(20) NOT NULL AFTER `name`")
-        checkColumn("ephone_app", "description", "text NOT NULL AFTER `display_name`")
-        checkColumn("ephone_app", "icon", "varchar(20) NOT NULL AFTER `description`")
-    end)
+        MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `ephone_app` (`id` int(11) NOT NULL AUTO_INCREMENT, `name` varchar(20) NOT NULL, `display_name` varchar(20) NOT NULL, `description` text NOT NULL, `icon` varchar(20) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;", {}, function(changes)
+            checkColumn("ephone_app", "id", "int(11) NOT NULL AUTO_INCREMENT")
+            checkColumn("ephone_app", "name", "varchar(20) NOT NULL AFTER `id`")
+            checkColumn("ephone_app", "display_name", "varchar(20) NOT NULL AFTER `name`")
+            checkColumn("ephone_app", "description", "text NOT NULL AFTER `display_name`")
+            checkColumn("ephone_app", "icon", "varchar(20) NOT NULL AFTER `description`")
+        end)
 
-    MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `ephone_users_group` (`user` int(11) NOT NULL, `group` int(11) NOT NULL, PRIMARY KEY (`user`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;", {}, function(changes)
-        checkColumn("ephone_app", "user", "int(11) NOT NULL")
-        checkColumn("ephone_app", "group", "int(11) NOT NULL")
+        MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `ephone_users_group` (`user` int(11) NOT NULL, `group` int(11) NOT NULL, PRIMARY KEY (`user`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;", {}, function(changes)
+            checkColumn("ephone_app", "user", "int(11) NOT NULL")
+            checkColumn("ephone_app", "group", "int(11) NOT NULL")
+        end)
     end)
 end
 
@@ -204,12 +204,14 @@ function getApp(name, callback)
 end
 
 function checkApp(name, callback)
-    MySQL.Async.fetchScalar("SELECT COUNT(1) FROM ephone_app WHERE name = @name", {['@name'] = name}, function(data)
-        if data == 0 then
-            callback(false)
-        else
-            callback(true)
-        end
+    AddEventHandler('onMySQLReady', function ()
+        MySQL.Async.fetchScalar("SELECT COUNT(1) FROM ephone_app WHERE name = @name", {['@name'] = name}, function(data)
+            if data == 0 then
+                callback(false)
+            else
+                callback(true)
+            end
+        end)
     end)
 end
 

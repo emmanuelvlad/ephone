@@ -20,46 +20,38 @@ end)
 
 RegisterServerEvent('ephone:getContacts')
 AddEventHandler('ephone:getContacts', function()
-    getUserId(source, function(uid)
-        getContacts(uid, function(data)
-            print("getcontacts")
-            TriggerClientEvent('ephone:loadContacts', source, data)
-        end)
+    getContacts(users[source].id, function(data)
+        print("getcontacts")
+        TriggerClientEvent('ephone:loadContacts', source, data)
     end)
 end)
 
 RegisterServerEvent('ephone:addContact')
 AddEventHandler('ephone:addContact', function(phone_number, name)
-    getUserId(source, function(uid)
-        contactAlreadyExists(uid, phone_number, function(bool)
-            if not bool then
-                getContactsCount(uid, function(data)
-                    if data < contacts_limit - 1 then
-                        addContact(uid, phone_number, name)
-                        TriggerClientEvent('ephone:getContacts', source)
-                    else
-                        -- Notify limit of contacts
-                    end
-                end)
-            else
-                -- Notify phone number already exists in repertory
-            end
-        end)
+    contactAlreadyExists(users[source].id, phone_number, function(bool)
+        if not bool then
+            getContactsCount(users[source].id, function(data)
+                if data < contacts_limit - 1 then
+                    addContact(users[source].id, phone_number, name)
+                    TriggerClientEvent('ephone:getContacts', source)
+                else
+                    -- Notify limit of contacts
+                end
+            end)
+        else
+            -- Notify phone number already exists in repertory
+        end
     end)
 end)
 
 RegisterServerEvent('ephone:updateContact')
 AddEventHandler('ephone:updateContact', function(phone_number, new_phone_number, name, new_name)
-    getUserId(source, function(uid)
-        updateContact(uid, phone_number, new_phone_number, name, new_name)
-    end)
+    updateContact(users[source].id, phone_number, new_phone_number, name, new_name)
 end)
 
 RegisterServerEvent('ephone:deleteContact')
 AddEventHandler('ephone:deleteContact', function(phone_number)
-    getUserId(source, function(uid)
-        deleteContact(uid, phone_number)
-    end)
+    deleteContact(users[source].id, phone_number)
 end)
 
 

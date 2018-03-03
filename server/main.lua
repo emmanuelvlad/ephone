@@ -1,9 +1,9 @@
 local number_length = 10 -- 19 Max !! NEVER GO BELOW YOUR PLAYER LIST
 local number_prefix = 213
 
-local battery_list = {}
-
 apps = {}
+
+users = {}
 
 --------------------------------------------------------------------------------
 --
@@ -14,45 +14,37 @@ AddEventHandler('chatMessageEntered', function(name, color, message)
 end)
 
 AddEventHandler('playerConnecting', function(playerName, setKickReason)
-    addUser(source)
+    getUser(source)
 end)
 
 AddEventHandler('playerDropped', function(reason)
-    getUserId(source, function(uid)
-        updateBattery(uid, battery_list[source])
-        battery_list[source] = nil
-    end)
+    updateBattery(users[source].id, users[source].battery)
+    users[source] = nil
 end)
 
 AddEventHandler('onResourceStart', function(resource)
     if resource == "ephone" then
         setupPhone()
+        RconPrint("\n\n\nStarting\n\n\n\n")
+        for k, v in pairs(GetPlayers()) do
+            getUser(k)
+            RconPrint(k)
+        end
+        RconPrint("\n\n\n\nAfter while\n\n\n\n")
     end
 end)
 
 AddEventHandler('onResourceStop', function(resource)
     if resource == "ephone" then
-        for k, v in pairs(battery_list) do
-            getUserId(k, function(uid)
-                updateBattery(uid, v)
-                battery_list[k] = nil
-            end)
+        for k, v in pairs(users) do
+            updateBattery(users[k].id, users[k].battery)
         end
     end
 end)
 
-RegisterServerEvent('ephone:getBattery')
-AddEventHandler('ephone:getBattery', function()
-    getUserId(source, function(uid)
-        getBattery(uid, function(data)
-            TriggerClientEvent('ephone:loadBattery', source, data)
-        end)
-    end)
-end)
-
 RegisterServerEvent('ephone:updateBattery')
 AddEventHandler('ephone:updateBattery', function(battery)
-    battery_list[source] = battery
+    users[source].battery = battery
 end)
 
 RegisterServerEvent('ephone:addApp')
@@ -81,10 +73,8 @@ end)
 
 RegisterServerEvent('ephone:changePhoneNumber')
 AddEventHandler('ephone:changePhoneNumber', function(new_phone_number)
-    getUserId(source, function(uid)
-        checkPhoneNumber(new_phone_number, function(bool)
-            changePhoneNumber(uid, new_phone_number)
-        end)
+    checkPhoneNumber(new_phone_number, function(bool)
+        changePhoneNumber(users[source].id, new_phone_number)
     end)
 end)
 
@@ -107,30 +97,26 @@ end)
 
 RegisterServerEvent('ephone:joinGroup')
 AddEventHandler('ephone:joinGroup', function(name)
-    getUserId(source, function(uid)
-        getGroupId(name, function(gid)
-            isUserInGroup(gid, function(bool)
-                if not bool then
-                    joinGroup(uid, gid)
-                else
-                    -- Log: User is already in the group
-                end
-            end)
+    getGroupId(name, function(gid)
+        isUserInGroup(gid, function(bool)
+            if not bool then
+                joinGroup(users[source].id, gid)
+            else
+                -- Log: User is already in the group
+            end
         end)
     end)
 end)
 
 RegisterServerEvent('ephone:leaveGroup')
 AddEventHandler('ephone:leaveGroup', function(name)
-    getUserId(source, function(uid)
-        getGroupId(name, function(gid)
-            isUserInGroup(gid, function(bool)
-                if bool then
-                    leaveGroup(uid, gid)
-                else
-                    -- Log: User is not in the group
-                end
-            end)
+    getGroupId(name, function(gid)
+        isUserInGroup(gid, function(bool)
+            if bool then
+                leaveGroup(users[source].id, gid)
+            else
+                -- Log: User is not in the group
+            end
         end)
     end)
 end)
@@ -142,7 +128,8 @@ end)
 --
 --------------------------------------------------------------------------------
 function setupPhone()
-    AddEventHandler('onMySQLReady', function ()
+    -- AddEventHandler('onMySQLReady', function ()
+    MySQL.ready(function ()
         MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `ephone_users` (`id` int(11) NOT NULL AUTO_INCREMENT, `playerid` varchar(255) NOT NULL, `phone_number` bigint(20) NOT NULL, `battery` int(11) NOT NULL DEFAULT '100', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;", {}, function(changes)
             checkColumn("ephone_users", "id", "int(11) NOT NULL AUTO_INCREMENT")
             checkColumn("ephone_users", "playerid", "varchar(255) NOT NULL AFTER `id`")
@@ -227,14 +214,20 @@ function deleteApp(name)
     MySQL.Async.execute("DELETE FROM ephone_app WHERE name=@name", {['@name'] = name})
 end
 
-function getUserId(source, callback)
-    MySQL.Async.fetchAll("SELECT * FROM ephone_users WHERE playerid = @source", {['@source'] = GetPlayerIdentifiers(source)[1]}, function(data)
-        if data[1].id then
-            callback(data[1].id)
-        else
-            callback(nil)
+function getUser(source)
+    if not users[source] then
+        local identifier = GetPlayerIdentifiers(source)
+        if identifier[1] then
+            local result = MySQL.Sync.fetchAll("SELECT * FROM ephone_users WHERE playerid = @source LIMIT 1", {['@source'] = identifier[1]})
+            if result[1] then
+                users[source] = result[1]
+            else
+                MySQL.Sync.execute("INSERT INTO ephone_users (`playerid`, `phone_number`) VALUES (@identifier, @number)", {['@identifier'] = identifier[1], ['@number'] = generatePhoneNumber()})
+                getUser(source)
+            end
         end
-    end)
+    end
+    return users[source]
 end
 
 function getGroupId(name, callback)
@@ -339,12 +332,6 @@ function deleteGroup(name)
     MySQL.Async.execute("DELETE FROM ephone_groups WHERE name=@name", {['@name'] = name})
 end
 
-function getBattery(uid, callback)
-    MySQL.Async.fetchAll("SELECT * FROM ephone_users WHERE id = @uid", {['@uid'] = uid}, function(data)
-        callback(data[1].battery)
-    end)
-end
-
 function updateBattery(uid, battery)
-    MySQL.Async.execute("UPDATE ephone_users SET battery=@battery WHERE id = @id", {['@battery'] = battery,  ['@id'] = uid})
+    MySQL.Sync.execute("UPDATE ephone_users SET battery=@battery WHERE id = @id", {['@battery'] = battery,  ['@id'] = uid})
 end

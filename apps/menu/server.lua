@@ -18,11 +18,9 @@ end)
 
 RegisterServerEvent('ephone:getMenu')
 AddEventHandler('ephone:getMenu', function()
-    getUserId(source, function(uid)
-        getUserMenu(uid, function(data)
-            getApps(function(apps)
-                TriggerClientEvent('ephone:loadMenu', source, apps, data)
-            end)
+    getUserMenu(users[source].id, function(data)
+        getApps(function(apps)
+            TriggerClientEvent('ephone:loadMenu', source, apps, data)
         end)
     end)
 end)
@@ -32,21 +30,17 @@ end)
 
 RegisterServerEvent('ephone:userAddApp')
 AddEventHandler('ephone:userAddApp', function(appname)
-    getUserId(source, function(uid)
-        userHasApp(uid, appname, function(app, bool)
-            if not bool then
-                userAddApp(uid, app)
-            end
-        end)
+    userHasApp(users[source].id, appname, function(app, bool)
+        if not bool then
+            userAddApp(users[source].id, app)
+        end
     end)
 end)
 
 RegisterServerEvent('ephone:userDeleteApp')
 AddEventHandler('ephone:userDeleteApp', function(appname)
-    getUserId(source, function(uid)
-        getApp(appname, function(app)
-            userDeleteApp(uid, app)
-        end)
+    getApp(appname, function(app)
+        userDeleteApp(users[source].id, app)
     end)
 end)
 

@@ -10,7 +10,7 @@ if (apps[appName].firstLoad == null) {
 }
 
 if (apps[appName].phoneIndex == null) {
-    apps[appName].phoneIndex = 0
+    apps[appName].phoneIndex = 9
 }
 if (apps[appName].pageIndex == null) {
     apps[appName].pageIndex = 0
@@ -98,7 +98,10 @@ function getApp(apps, appid) {
 
 $(function() {
     $("#phone-content").css("background-image", "url('../html/background.jpg')")
-    if (apps[appName].firstLoad) { sendData("getMenu", {}); apps[appName].firstLoad = false }
+    if (apps[appName].firstLoad) {
+        sendData("getMenu", {})
+        apps[appName].firstLoad = false
+    }
 })
 
 apps[appName].phoneUp = function() {

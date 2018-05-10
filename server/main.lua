@@ -10,7 +10,11 @@ users = {}
 --									EVENTS
 --
 --------------------------------------------------------------------------------
-AddEventHandler('chatMessageEntered', function(name, color, message)
+
+AddEventHandler('chatMessage', function(name, color, message)
+    getApp("contact", function(app)
+        RconPrint("\n" .. tostring(app))
+    end)
 end)
 
 AddEventHandler('playerConnecting', function(playerName, setKickReason)
@@ -18,8 +22,12 @@ AddEventHandler('playerConnecting', function(playerName, setKickReason)
 end)
 
 AddEventHandler('playerDropped', function(reason)
-    updateBattery(users[source].id, users[source].battery)
-    users[source] = nil
+    local player = source
+    if users[player] then
+        RconPrint("\n\nDROP : " .. tostring(users[player].id .. " + " .. tostring(users[player].battery)))
+        updateBattery(users[player].id, users[player].battery)
+        users[player] = nil
+    end
 end)
 
 AddEventHandler('onResourceStart', function(resource)
@@ -27,8 +35,7 @@ AddEventHandler('onResourceStart', function(resource)
         setupPhone()
         RconPrint("\n\n\nStarting\n\n\n\n")
         for k, v in pairs(GetPlayers()) do
-            getUser(k)
-            RconPrint(k)
+            getUser(v)
         end
         RconPrint("\n\n\n\nAfter while\n\n\n\n")
     end
@@ -37,14 +44,18 @@ end)
 AddEventHandler('onResourceStop', function(resource)
     if resource == "ephone" then
         for k, v in pairs(users) do
-            updateBattery(users[k].id, users[k].battery)
+            if users[v] then
+                updateBattery(users[v].id, users[v].battery)
+            end
         end
     end
 end)
 
 RegisterServerEvent('ephone:updateBattery')
 AddEventHandler('ephone:updateBattery', function(battery)
-    users[source].battery = battery
+    if users[source] then
+        users[source].battery = battery
+    end
 end)
 
 RegisterServerEvent('ephone:addApp')
@@ -191,20 +202,18 @@ function getApp(name, callback)
 end
 
 function checkApp(name, callback)
-    AddEventHandler('onMySQLReady', function ()
-        MySQL.Async.fetchScalar("SELECT COUNT(1) FROM ephone_app WHERE name = @name", {['@name'] = name}, function(data)
-            if data == 0 then
-                callback(false)
-            else
-                callback(true)
-            end
-        end)
+    MySQL.Async.fetchScalar("SELECT COUNT(1) FROM ephone_app WHERE name = @name", {['@name'] = name}, function(data)
+        if data == 0 then
+            callback(false)
+        else
+            callback(true)
+        end
     end)
 end
 
 function addApp(name, display_name, description, icon)
-    checkApp(name, function(bool, err)
-        if not bool then
+    getApp(name, function(app)
+        if not app then
             MySQL.Async.execute("INSERT INTO ephone_app (`name`, `display_name`, `description`, `icon`) VALUES (@name, @display_name, @description, @icon)", {['@name'] = name, ['@display_name'] = display_name, ['@description'] = description, ['@icon'] = icon})
         end
     end)
@@ -217,17 +226,19 @@ end
 function getUser(source)
     if not users[source] then
         local identifier = GetPlayerIdentifiers(source)
+
         if identifier[1] then
-            local result = MySQL.Sync.fetchAll("SELECT * FROM ephone_users WHERE playerid = @source LIMIT 1", {['@source'] = identifier[1]})
-            if result[1] then
-                users[source] = result[1]
-            else
-                MySQL.Sync.execute("INSERT INTO ephone_users (`playerid`, `phone_number`) VALUES (@identifier, @number)", {['@identifier'] = identifier[1], ['@number'] = generatePhoneNumber()})
-                getUser(source)
-            end
+            MySQL.Async.fetchAll("SELECT * FROM ephone_users WHERE playerid = @source LIMIT 1", {['@source'] = identifier[1]}, function(user)
+                if user[1] then
+                    users[source] = user[1]
+                    return user[1]
+                else
+                    MySQL.Sync.execute("INSERT INTO ephone_users (`playerid`, `phone_number`) VALUES (@identifier, @number)", {['@identifier'] = identifier[1], ['@number'] = generatePhoneNumber()})
+                    return getUser(source)
+                end
+            end)
         end
     end
-    return users[source]
 end
 
 function getGroupId(name, callback)

@@ -12,7 +12,9 @@ apps[app_name] = {}
 --------------------------------------------------------------------------------
 AddEventHandler('onResourceStart', function(resource)
     if resource == "ephone" then
-        addApp(app_name, app_display_name, app_description, app_icon)
+        MySQL.ready(function()
+            addApp(app_name, app_display_name, app_description, app_icon)
+        end)
         --apps[name].init()
     end
 end)

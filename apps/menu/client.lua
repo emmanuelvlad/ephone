@@ -1,3 +1,17 @@
+local menu_loaded = false
+
+--------------------------------------------------------------------------------
+--
+--									Threads
+--
+--------------------------------------------------------------------------------
+Citizen.CreateThread(function()
+	while menu_loaded == false do
+		TriggerServerEvent('ephone:getMenu')
+		Citizen.Wait(5000)
+	end
+end)
+
 --------------------------------------------------------------------------------
 --
 --									CALLBACKS
@@ -15,6 +29,7 @@ end)
 --------------------------------------------------------------------------------
 RegisterNetEvent("ephone:loadMenu")
 AddEventHandler("ephone:loadMenu", function(apps, menu)
+	menu_loaded = true
 	SendNUIMessage({
 		update = {
 			name = "menu",

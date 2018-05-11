@@ -64,49 +64,31 @@ apps[app_name].init = function ()
 end
 
 function getUserMenu(source, callback)
-    local identifier = GetPlayerIdentifiers(source)
-
-    if identifier[1] then
-        MySQL.Async.fetchAll("SELECT * FROM ephone_app_menu LEFT JOIN ephone_users ON ephone_users.id = user WHERE ephone_users.playerid = @playerid", {['@playerid'] = identifier[1]}, function(data)
-            callback(data)
-        end)
-    end
+    MySQL.Async.fetchAll("SELECT * FROM ephone_app_menu WHERE user = @id", {['@id'] = users[source].id}, function(data)
+        callback(data)
+    end)
 end
 
 function userHasApp(source, appname, callback)
-    local identifier = GetPlayerIdentifiers(source)
-
-    if identifier[1] then
-        getApp(appname, function(app)
-            MySQL.Async.fetchScalar("SELECT COUNT(1) FROM ephone_app_menu LEFT JOIN ephone_users ON ephone_users.id = user WHERE ephone_users.playerid = @playerid AND appid = @appid", {['@playerid'] = identifier[1], ['@appid'] = app.id}, function(data)
-                if data == 0 then
-                    callback(app, false)
-                else
-                    callback(app, true)
-                end
-            end)
+    getApp(appname, function(app)
+        MySQL.Async.fetchScalar("SELECT COUNT(1) FROM ephone_app_menu WHERE user = @id AND appid = @appid", {['@id'] = users[source].id, ['@appid'] = app.id}, function(data)
+            if data == 0 then
+                callback(app, false)
+            else
+                callback(app, true)
+            end
         end)
-    end
+    end)
 end
 
 function userAddApp(source, app)
-    local identifier = GetPlayerIdentifiers(source)
-
-    if identifier[1] then
-        MySQL.Async.fetchScalar("SELECT COUNT(*) FROM ephone_app_menu LEFT JOIN ephone_users ON ephone_users.id = user WHERE ephone_users.playerid = @playerid", {['@playerid'] = uid}, function(data)
-            getUser(source, function(user) 
-                MySQL.Async.execute("INSERT INTO ephone_app_menu (`user`, `appid`, `index`) VALUES (@uid, @appid, @index)", {['@uid'] = user.id, ['appid'] = app.id, ['index'] = data + 1}, function(changes)
-                    TriggerClientEvent('ephone:getMenu', source)
-                end)
-            end)
+    MySQL.Async.fetchScalar("SELECT COUNT(*) FROM ephone_app_menu WHERE user = @id", {['@id'] = users[source].id}, function(data)
+        MySQL.Async.execute("INSERT INTO ephone_app_menu (`user`, `appid`, `index`) VALUES (@id, @appid, @index)", {['@id'] = users[source].id, ['appid'] = app.id, ['index'] = data + 1}, function(changes)
+            TriggerClientEvent('ephone:getMenu', source)
         end)
-    end
+    end)
 end
 
 function userDeleteApp(source, app)
-    local identifier = GetPlayerIdentifiers(source)
-
-    if identifier[1] then
-        MySQL.Async.execute("DELETE FROM ephone_app_menu LEFT JOIN ephone_users ON ephone_users.id = user WHERE ephone_users.playerid = @playerid AND appid = @appid", {['@playerid'] = identifier[1], ['@appid'] = app.id})
-    end
+    MySQL.Async.execute("DELETE FROM ephone_app_menu WHERE user = @id AND appid = @appid", {['@id'] = users[source].id, ['@appid'] = app.id})
 end

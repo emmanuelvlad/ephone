@@ -76,58 +76,36 @@ apps[app_name].init = function()
 end
 
 function getContacts(source, callback)
-    local identifier = GetPlayerIdentifiers(source)
-
-    if identifier[1] then
-        MySQL.Async.fetchAll("SELECT * FROM ephone_app_contacts LEFT JOIN ephone_users ON ephone_users.id = user WHERE ephone_users.playerid = @playerid", {['@playerid'] = identifier[1]}, function(data)
-            callback(data)
-        end)
-    end
-end
-
-function getContactsCount(source, callback)
-    local identifier = GetPlayerIdentifiers(source)
-
-    if identifier[1] then
-        MySQL.Async.fetchScalar("SELECT COUNT(*) FROM ephone_app_contacts LEFT JOIN ephone_users ON ephone_users.id = user WHERE ephone_users.playerid = @playerid", {['@playerid'] = identifier[1]}, function(data)
-            callback(data)
-        end)
-    end
-end
-
-function contactAlreadyExists(source, phone_number, callback)
-    local identifier = GetPlayerIdentifiers(source)
-
-    if identifier[1] then
-        MySQL.Async.fetchScalar("SELECT COUNT(1) FROM ephone_app_contacts LEFT JOIN ephone_users ON ephone_users.id = user WHERE ephone_users.playerid = @playerid AND ephone_app_contacts.phone_number = @phone_number", {['@playerid'] = identifier[1], ['@phone_number'] = phone_number}, function(data)
-            if data == 0 then
-                callback(false)
-            else
-                callback(true)
-            end
-        end)
-    end
-end
-
-function addContact(source, phone_number, name)
-    RconPrint("user ... " .. source)
-    getUser(source, function(user)
-        MySQL.Async.execute("INSERT INTO ephone_app_contacts (`user`, `phone_number`, `name`) VALUES (@user, @phone_number, @name)", {['@user'] = user.id, ['@phone_number'] = phone_number, ['@name'] = name})
+    MySQL.Async.fetchAll("SELECT * FROM ephone_app_contacts  WHERE user = @id", {['@id'] = users[source].id}, function(data)
+        callback(data)
     end)
 end
 
-function updateContact(source, phone_number, new_phone_number, name, new_name)
-    local identifier = GetPlayerIdentifiers(source)
+function getContactsCount(source, callback)
+    MySQL.Async.fetchScalar("SELECT COUNT(*) FROM ephone_app_contacts WHERE user = @id", {['@id'] = users[source].id}, function(data)
+        callback(data)
+    end)
+end
 
-    if identifier[1] then
-        MySQL.Async.execute("UPDATE ephone_app_contacts LEFT JOIN ephone_users ON ephone_users.id = user SET ephone_app_contacts.phone_number = @new_phone_number, name = @new_name WHERE ephone_users.playerid = @playerid AND ephone_app_contacts.phone_number = @phone_number", {['@new_phone_number'] = new_phone_number, ['@new_name'] = new_name, ['@playerid'] = identifier[1], ['@phone_number'] = phone_number})
-    end
+function contactAlreadyExists(source, phone_number, callback)
+    MySQL.Async.fetchScalar("SELECT COUNT(1) FROM ephone_app_contacts WHERE user = @id AND phone_number = @phone_number", {['@id'] = users[source].id, ['@phone_number'] = phone_number}, function(data)
+        if data == 0 then
+            callback(false)
+        else
+            callback(true)
+        end
+    end)
+end
+
+function addContact(source, phone_number, name)
+    RconPrint("\n\nuser ... " .. tostring(source) .. " - " .. tostring(users[source]))
+    MySQL.Async.execute("INSERT INTO ephone_app_contacts (`user`, `phone_number`, `name`) VALUES (@user, @phone_number, @name)", {['@user'] = users[source].id, ['@phone_number'] = phone_number, ['@name'] = name})
+end
+
+function updateContact(source, phone_number, new_phone_number, name, new_name)
+    MySQL.Async.execute("UPDATE ephone_app_contacts SET phone_number = @new_phone_number, name = @new_name WHERE user = @id AND phone_number = @phone_number", {['@new_phone_number'] = new_phone_number, ['@new_name'] = new_name, ['@id'] = users[source].id, ['@phone_number'] = phone_number})
 end
 
 function deleteContact(source, phone_number)
-    local identifier = GetPlayerIdentifiers(source)
-
-    if identifier[1] then
-        MySQL.Async.execute("DELETE FROM ephone_app_contacts LEFT JOIN ephone_users ON ephone_users.id = user WHERE ephone_users.playerid = @playerid AND phone_number = @phone_number", {['@playerid'] = identifier[1], ['@phone_number'] = phone_number})
-    end
+    MySQL.Async.execute("DELETE FROM ephone_app_contacts WHERE user = @id AND phone_number = @phone_number", {['@id'] = users[source].id, ['@phone_number'] = phone_number})
 end

@@ -5,16 +5,15 @@ apps = {}
 
 users = {}
 
+users[2] = {}
 --------------------------------------------------------------------------------
 --
 --									EVENTS
 --
 --------------------------------------------------------------------------------
 
-AddEventHandler('chatMessage', function(name, color, message)
-    getApp("contact", function(app)
-        RconPrint("\n" .. tostring(app))
-    end)
+AddEventHandler('chatMessage', function(player, color, message)
+    print(tostring(player) .. tostring(users[player].playerid))
 end)
 
 AddEventHandler('playerConnecting', function(playerName, setKickReason)
@@ -34,8 +33,8 @@ AddEventHandler('onResourceStart', function(resource)
     if resource == "ephone" then
         setupPhone()
         RconPrint("\n\n\nStarting\n\n\n\n")
-        for k, v in pairs(GetPlayers()) do
-            getUser(v)
+        for _, v in ipairs(GetPlayers()) do
+            getUser(tonumber(v))
         end
         RconPrint("\n\n\n\nAfter while\n\n\n\n")
     end
@@ -224,20 +223,17 @@ function deleteApp(name)
 end
 
 function getUser(source)
-    if not users[source] then
-        local identifier = GetPlayerIdentifiers(source)
+    local identifier = GetPlayerIdentifiers(source)
 
-        if identifier[1] then
-            MySQL.Async.fetchAll("SELECT * FROM ephone_users WHERE playerid = @source LIMIT 1", {['@source'] = identifier[1]}, function(user)
-                if user[1] then
-                    users[source] = user[1]
-                    return user[1]
-                else
-                    MySQL.Sync.execute("INSERT INTO ephone_users (`playerid`, `phone_number`) VALUES (@identifier, @number)", {['@identifier'] = identifier[1], ['@number'] = generatePhoneNumber()})
-                    return getUser(source)
-                end
-            end)
-        end
+    if identifier[1] then
+        MySQL.Async.fetchAll("SELECT * FROM ephone_users WHERE playerid = @source LIMIT 1", {['@source'] = identifier[1]}, function(user)
+            if user[1] then
+                users[source] = user[1]
+            else
+                MySQL.Sync.execute("INSERT INTO ephone_users (`playerid`, `phone_number`) VALUES (@identifier, @number)", {['@identifier'] = identifier[1], ['@number'] = generatePhoneNumber()})
+                getUser(source)
+            end
+        end)
     end
 end
 

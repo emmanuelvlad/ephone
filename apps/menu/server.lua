@@ -18,11 +18,10 @@ end)
 
 RegisterServerEvent('ephone:getMenu')
 AddEventHandler('ephone:getMenu', function()
-    getUserId(source, function(uid)
-        getUserMenu(uid, function(data)
-            getApps(function(apps)
-                TriggerClientEvent('ephone:loadMenu', source, apps, data)
-            end)
+    local player = source
+    getUserMenu(player, function(data)
+        getApps(function(apps)
+            TriggerClientEvent('ephone:loadMenu', player, apps, data)
         end)
     end)
 end)
@@ -32,21 +31,19 @@ end)
 
 RegisterServerEvent('ephone:userAddApp')
 AddEventHandler('ephone:userAddApp', function(appname)
-    getUserId(source, function(uid)
-        userHasApp(uid, appname, function(app, bool)
-            if not bool then
-                userAddApp(uid, app)
-            end
-        end)
+    local player = source
+    userHasApp(player, appname, function(app, bool)
+        if not bool then
+            userAddApp(player, app)
+        end
     end)
 end)
 
 RegisterServerEvent('ephone:userDeleteApp')
 AddEventHandler('ephone:userDeleteApp', function(appname)
-    getUserId(source, function(uid)
-        getApp(appname, function(app)
-            userDeleteApp(uid, app)
-        end)
+    local player = source
+    getApp(appname, function(app)
+        userDeleteApp(player, app)
     end)
 end)
 
@@ -57,7 +54,7 @@ end)
 --
 --------------------------------------------------------------------------------
 apps[app_name].init = function ()
-    AddEventHandler('onMySQLReady', function ()
+    MySQL.ready(function ()
         MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `ephone_app_menu` (`user` int(11) NOT NULL, `appid` int(11) NOT NULL, `index` int(11) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;", {}, function(changes)
             checkColumn("ephone_app_menu", "user", "int(11) NOT NULL")
             checkColumn("ephone_app_menu", "appid", "int(11) NOT NULL AFTER `user`")
@@ -66,15 +63,15 @@ apps[app_name].init = function ()
     end)
 end
 
-function getUserMenu(uid, callback)
-    MySQL.Async.fetchAll("SELECT * FROM ephone_app_menu WHERE user = @user", {['@user'] = uid}, function(data)
+function getUserMenu(source, callback)
+    MySQL.Async.fetchAll("SELECT * FROM ephone_app_menu WHERE user = @id", {['@id'] = users[source].id}, function(data)
         callback(data)
     end)
 end
 
-function userHasApp(uid, appname, callback)
+function userHasApp(source, appname, callback)
     getApp(appname, function(app)
-        MySQL.Async.fetchScalar("SELECT COUNT(1) FROM ephone_app_menu WHERE user = @user AND appid = @appid", {['@user'] = uid, ['@appid'] = app.id}, function(data)
+        MySQL.Async.fetchScalar("SELECT COUNT(1) FROM ephone_app_menu WHERE user = @id AND appid = @appid", {['@id'] = users[source].id, ['@appid'] = app.id}, function(data)
             if data == 0 then
                 callback(app, false)
             else
@@ -84,14 +81,14 @@ function userHasApp(uid, appname, callback)
     end)
 end
 
-function userAddApp(uid, app)
-    MySQL.Async.fetchScalar("SELECT COUNT(*) FROM ephone_app_menu WHERE user = @user", {['@user'] = uid}, function(data)
-        MySQL.Async.execute("INSERT INTO ephone_app_menu (`user`, `appid`, `index`) VALUES (@uid, @appid, @index)", {['@uid'] = uid, ['appid'] = app.id, ['index'] = data + 1}, function(changes)
+function userAddApp(source, app)
+    MySQL.Async.fetchScalar("SELECT COUNT(*) FROM ephone_app_menu WHERE user = @id", {['@id'] = users[source].id}, function(data)
+        MySQL.Async.execute("INSERT INTO ephone_app_menu (`user`, `appid`, `index`) VALUES (@id, @appid, @index)", {['@id'] = users[source].id, ['appid'] = app.id, ['index'] = data + 1}, function(changes)
             TriggerClientEvent('ephone:getMenu', source)
         end)
     end)
 end
 
-function userDeleteApp(uid, app)
-    MySQL.Async.execute("DELETE FROM ephone_app_menu WHERE user = @user AND appid = @appid", {['@user'] = uid, ['@appid'] = app.id})
+function userDeleteApp(source, app)
+    MySQL.Async.execute("DELETE FROM ephone_app_menu WHERE user = @id AND appid = @appid", {['@id'] = users[source].id, ['@appid'] = app.id})
 end

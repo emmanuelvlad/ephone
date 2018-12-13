@@ -12,11 +12,11 @@ files {
 	"html/index.html",
 	"html/main.js",
 	"html/main.css",
-	"html/background.jpg",
 
-	"html/cursor.png",
-	"html/pointer.png",
-	"html/text.png",
+	"html/images/background.jpg",
+	"html/images/cursor.png",
+	"html/images/pointer.png",
+	"html/images/text.png",
 
 	"sounds/lowBattery.ogg",
 	"sounds/chargerConnection.ogg",

@@ -12,6 +12,8 @@ local phoneModel = "prop_npc_phone_02"
 --								FUNCTIONS
 --
 --------------------------------------------------------------------------------
+
+-- Creates a phone prop
 function newPhoneProp()
 	local x,y,z = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
 	RequestModel(phoneModel)
@@ -21,6 +23,8 @@ function newPhoneProp()
 	return CreateObject(phoneModel, 1.0, 1.0, 1.0, 1, 1, 0)
 end
 
+
+-- Play the In animation
 function ePhoneInAnim()
 	if IsPlayerDead(PlayerId()) then
 		return

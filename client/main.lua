@@ -22,7 +22,7 @@ Citizen.CreateThread(function()
 		if ringtone then
 			print("playing ringtone")
 			PlaySoundFromEntity(-1, "Text_Arrive_Tone", GetPlayerPed(-1), "Phone_SoundSet_Michael", 0, 2)
-			Citizen.Wait(1000)
+			Citizen.Wait(750)
 		end
 	end
 end)

@@ -50,17 +50,17 @@ $(function() {
     })
 
     $(".cursor-pointer").mouseenter(function() {
-        $("#cursor").attr("src", "pointer.png")
+        $("#cursor").attr("src", "images/pointer.png")
         $("#cursor").css("margin-left", "-12px")
     }).mouseleave(function() {
-        $("#cursor").attr("src", "cursor.png")
+        $("#cursor").attr("src", "images/cursor.png")
         $("#cursor").css("margin-left", "0")
     })
 
     $(".cursor-text").mouseenter(function() {
-        $("#cursor").attr("src", "text.png")
+        $("#cursor").attr("src", "images/text.png")
     }).mouseleave(function() {
-        $("#cursor").attr("src", "cursor.png")
+        $("#cursor").attr("src", "images/cursor.png")
     })
 })
 

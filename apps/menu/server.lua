@@ -63,8 +63,8 @@ apps[app_name].init = function ()
     end)
 end
 
-function getUserMenu(source, callback)
-    MySQL.Async.fetchAll("SELECT * FROM ephone_app_menu WHERE user = @id", {['@id'] = users[source].id}, function(data)
+function getUserMenu(player, callback)
+    MySQL.Async.fetchAll("SELECT * FROM `ephone_app_menu` WHERE `user` = @id", { ['@id'] = users[player].id }, function(data)
         callback(data)
     end)
 end

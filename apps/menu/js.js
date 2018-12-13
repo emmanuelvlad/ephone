@@ -97,7 +97,7 @@ function getApp(apps, appid) {
 }
 
 $(function() {
-    $("#phone-content").css("background-image", "url('../html/background.jpg')")
+    $("#phone-content").css("background-image", "url('../html/images/background.jpg')")
     if (apps[appName].firstLoad) {
         sendData("getMenu", {})
         apps[appName].firstLoad = false

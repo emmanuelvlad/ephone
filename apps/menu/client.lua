@@ -5,12 +5,12 @@ local menu_loaded = false
 --									Threads
 --
 --------------------------------------------------------------------------------
-Citizen.CreateThread(function()
-	while menu_loaded == false do
-		TriggerServerEvent('ephone:getMenu')
-		Citizen.Wait(5000)
-	end
-end)
+-- Citizen.CreateThread(function()
+-- 	while menu_loaded == false do
+-- 		Citizen.Wait(5000)
+-- 		TriggerServerEvent('ephone:getMenu')
+-- 	end
+-- end)
 
 --------------------------------------------------------------------------------
 --

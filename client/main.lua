@@ -54,9 +54,9 @@ Citizen.CreateThread(function()
 
 		-- Charge event
 		if IsPedInAnyVehicle(GetPlayerPed(-1), false) and not IsPedOnAnyBike(GetPlayerPed(-1)) then
-			TriggerEvent("ephone:battery_in_charge")
+			TriggerEvent("ephone:charging", true)
 		else
-			TriggerEvent("ephone:battery_not_in_charge")
+			TriggerEvent("ephone:charging", false)
 		end
 
 		-- Enable phone
@@ -225,7 +225,7 @@ end
 function ePhoneUp()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
-			up = true
+			buttonPressed = "up"
 		})
 	end
 end
@@ -233,7 +233,7 @@ end
 function ePhoneWheelUp()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
-			wheelup = true
+			buttonPressed = "wheelUp"
 		})
 	end
 end
@@ -241,7 +241,7 @@ end
 function ePhoneDown()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
-			down = true
+			buttonPressed = "down"
 		})
 	end
 end
@@ -249,7 +249,7 @@ end
 function ePhoneWheelDown()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
-			wheeldown = true
+			buttonPressed = "wheelDown"
 		})
 	end
 end
@@ -257,7 +257,7 @@ end
 function ePhoneLeft()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
-			left = true
+			buttonPressed = "left"
 		})
 	end
 end
@@ -265,7 +265,7 @@ end
 function ePhoneRight()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
-			right = true
+			buttonPressed = "right"
 		})
 	end
 end
@@ -273,7 +273,7 @@ end
 function ePhoneSelect()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
-			select = true
+			buttonPressed = "select"
 		})
 	end
 end
@@ -281,7 +281,7 @@ end
 function ePhoneCancel()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
-			cancel = true
+			buttonPressed = "cancel"
 		})
 	elseif showPhone then
 		ePhoneHide()
@@ -291,7 +291,7 @@ end
 function ePhoneOption()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
-			option = true
+			buttonPressed = "option"
 		})
 	end
 end
@@ -299,7 +299,7 @@ end
 function ePhoneExtraOption()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
-			extra_option = true
+			buttonPressed = "extraOption"
 		})
 	end
 end

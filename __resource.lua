@@ -10,13 +10,18 @@ server_export 'generatePhoneNumber'
 
 files {
 	"html/index.html",
-	"html/main.js",
-	"html/main.css",
-	"html/background.jpg",
+	"html/app.vue",
+	"html/store.js",
 
-	"html/cursor.png",
-	"html/pointer.png",
-	"html/text.png",
+	"html/vendor/vue.2.5.17.min.js",
+	"html/vendor/http-vue-loader.1.3.6.min.js",
+	"html/vendor/mdi/css/mdi.min.css",
+	"html/vendor/mdi/fonts/materialdesignicons-webfont",
+
+	"html/images/background-1.jpg",
+	"html/images/cursor.png",
+	"html/images/pointer.png",
+	"html/images/text.png",
 
 	"sounds/lowBattery.ogg",
 	"sounds/chargerConnection.ogg",

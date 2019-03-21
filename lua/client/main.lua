@@ -30,7 +30,7 @@ end)
 Citizen.CreateThread(function()
 	while true do Citizen.Wait(1)
 		if IsPlayerPlayingAnimation() and showPhone then
-			ePhoneHide()
+			phoneHide()
 			SetPedCanRagdoll(GetPlayerPed(-1), false)
 		else
 			SetPedCanRagdoll(GetPlayerPed(-1), true)
@@ -38,7 +38,7 @@ Citizen.CreateThread(function()
 
 		-- Hide phone if player is dead
 		if IsPlayerDead(PlayerId()) then
-			ePhoneHide()
+			phoneHide()
 		end
 
 		-- Test things
@@ -62,38 +62,38 @@ Citizen.CreateThread(function()
 		-- Enable phone
 		if enable_phone then
 			if IsControlJustPressed(3, 27) then
-				ePhoneShow()
+				phoneShow()
 			elseif IsControlJustPressed(0, 322) then
-				ePhoneHide()
+				phoneHide()
 			end
 			if not inputBlocked then
 				if IsControlJustPressed(3, 172) then
-					ePhoneUp()
+					phoneUp()
 				elseif IsControlJustPressed(3, 181) then
-					ePhoneWheelUp()
+					phoneWheelUp()
 				elseif IsControlJustPressed(3, 173) then
-					ePhoneDown()
+					phoneDown()
 				elseif IsControlJustPressed(3, 180) then
-					ePhoneWheelDown()
+					phoneWheelDown()
 				elseif IsControlJustPressed(3, 174) then
-					ePhoneLeft()
+					phoneLeft()
 				elseif IsControlJustPressed(3, 175) then
-					ePhoneRight()
+					phoneRight()
 				elseif IsControlJustPressed(3, 176) then
-					ePhoneSelect()
+					phoneSelect()
 				elseif IsControlJustPressed(3, 177) then
-					ePhoneCancel()
+					phoneCancel()
 				elseif IsControlJustPressed(3, 178) then
-					ePhoneOption()
+					phoneOption()
 				elseif IsControlJustPressed(3, 179) then
-					ePhoneExtraOption()
+					phoneExtraOption()
 				end
 			end
 		end
 
 		-- Hide phone if player holds a weapon
 		if GetCurrentPedWeapon(GetPlayerPed(-1)) then
-			ePhoneHide()
+			phoneHide()
 		end
 
 		-- Update phone date
@@ -124,7 +124,7 @@ RegisterNUICallback("playSound", function(data, cb)
 end)
 
 RegisterNUICallback("phoneClose", function(data, cb)
-	ePhoneHide()
+	phoneHide()
 end)
 
 RegisterNUICallback("app-contacts", function(data, cb)
@@ -201,7 +201,7 @@ function updateDate()
 	})
 end
 
-function ePhoneShow()
+function phoneShow()
 	if not showPhone then
 		SetCurrentPedWeapon(GetPlayerPed(-1), 0xA2719263)
 		ePhoneInAnim()
@@ -212,7 +212,7 @@ function ePhoneShow()
 	end
 end
 
-function ePhoneHide()
+function phoneHide()
 	if showPhone then
 		SendNUIMessage({
 			hide = true
@@ -222,7 +222,7 @@ function ePhoneHide()
 	end
 end
 
-function ePhoneUp()
+function phoneUp()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
 			buttonPressed = "up"
@@ -230,7 +230,7 @@ function ePhoneUp()
 	end
 end
 
-function ePhoneWheelUp()
+function phoneWheelUp()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
 			buttonPressed = "wheelUp"
@@ -238,7 +238,7 @@ function ePhoneWheelUp()
 	end
 end
 
-function ePhoneDown()
+function phoneDown()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
 			buttonPressed = "down"
@@ -246,7 +246,7 @@ function ePhoneDown()
 	end
 end
 
-function ePhoneWheelDown()
+function phoneWheelDown()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
 			buttonPressed = "wheelDown"
@@ -254,7 +254,7 @@ function ePhoneWheelDown()
 	end
 end
 
-function ePhoneLeft()
+function phoneLeft()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
 			buttonPressed = "left"
@@ -262,7 +262,7 @@ function ePhoneLeft()
 	end
 end
 
-function ePhoneRight()
+function phoneRight()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
 			buttonPressed = "right"
@@ -270,7 +270,7 @@ function ePhoneRight()
 	end
 end
 
-function ePhoneSelect()
+function phoneSelect()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
 			buttonPressed = "select"
@@ -278,17 +278,17 @@ function ePhoneSelect()
 	end
 end
 
-function ePhoneCancel()
+function phoneCancel()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
 			buttonPressed = "cancel"
 		})
 	elseif showPhone then
-		ePhoneHide()
+		phoneHide()
 	end
 end
 
-function ePhoneOption()
+function phoneOption()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
 			buttonPressed = "option"
@@ -296,7 +296,7 @@ function ePhoneOption()
 	end
 end
 
-function ePhoneExtraOption()
+function phoneExtraOption()
 	if showPhone and battery > 0 then
 		SendNUIMessage({
 			buttonPressed = "extraOption"
@@ -338,68 +338,68 @@ end)
 RegisterNetEvent("ephone:disable")
 AddEventHandler("ephone:disable", function()
 	enable_phone = false
-	ePhoneHide()
+	phoneHide()
 end)
 
 RegisterNetEvent("ephone:show")
 AddEventHandler("ephone:show", function()
-	ePhoneShow()
+	phoneShow()
 end)
 
 RegisterNetEvent("ephone:hide")
 AddEventHandler("ephone:hide", function()
-	ePhoneHide()
+	phoneHide()
 end)
 
 RegisterNetEvent("ephone:up")
 AddEventHandler("ephone:up", function()
-	ePhoneUp()
+	phoneUp()
 end)
 
 RegisterNetEvent("ephone:wheelup")
 AddEventHandler("ephone:wheelup", function()
-	ePhoneWheelUp()
+	phoneWheelUp()
 end)
 
 
 RegisterNetEvent("ephone:down")
 AddEventHandler("ephone:down", function()
-	ePhoneDown()
+	phoneDown()
 end)
 
 RegisterNetEvent("ephone:wheeldown")
 AddEventHandler("ephone:wheeldown", function()
-	ePhoneWheelDown()
+	phoneWheelDown()
 end)
 
 RegisterNetEvent("ephone:left")
 AddEventHandler("ephone:left", function()
-	ePhoneLeft()
+	phoneLeft()
 end)
 
 RegisterNetEvent("ephone:right")
 AddEventHandler("ephone:right", function()
-	ePhoneRight()
+	phoneRight()
 end)
 
 RegisterNetEvent("ephone:cancel")
 AddEventHandler("ephone:cancel", function()
-	ePhoneCancel()
+	phoneCancel()
 end)
 
 RegisterNetEvent("ephone:select")
 AddEventHandler("ephone:select", function()
-	ePhoneSelect()
+	phoneSelect()
 end)
 
 RegisterNetEvent("ephone:option")
 AddEventHandler("ephone:option", function()
-	ePhoneOption()
+	phoneOption()
 end)
 
 RegisterNetEvent("ephone:extra_option")
 AddEventHandler("ephone:extra_option", function()
-	ePhoneExtraOption()
+	phoneExtraOption()
 end)
 
 RegisterNetEvent('ephone:changePhoneNumber')

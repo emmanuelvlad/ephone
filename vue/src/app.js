@@ -1,14 +1,6 @@
 import Vue from "vue";
 import App from "./app.vue";
-import Vuex from "vuex";
-
-Vue.use(Vuex);
-
-const store = new Vuex.Store({
-	modules: { 
-		index: () => import("./store/index.js")
-	}
-});
+import store from "./store";
 
 new Vue({
 	el: "#app",

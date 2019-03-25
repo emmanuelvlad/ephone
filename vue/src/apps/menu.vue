@@ -1,32 +1,32 @@
 <template>
 	<div>
-		<div class="menu">
+		<div class="day-information">
+			Monday, Mar 25 | * 6°C
+		</div>
+		<div
+			class="menu">
+
 			<div
 				v-for="(app, index) in apps"
 				:key="index"
-				:class="'application app-' + app.name + ' ' + (selectedApp === index ? 'selected' : '')"
-				:data-trigger="app.name"
-				:data-index="index">
-				<div class="icon">
-					<span :class="'mdi mdi-' + app.icon" />
+				:class="'application app-' + app.name + ' ' + (selectedApp === index ? 'selected' : '')">
+
+				<div
+					class="icon"
+					@click="$store.dispatch('changeApp', app.name)">
+					<img
+						v-if="app.image"
+						:src="app.image"
+						alt="settings">
+					<span
+						v-else
+						:class="'mdi mdi-' + app.icon" />
 				</div>
+			
 				<p>{{ app.display_name }}</p>
-			</div>
-		</div>
 
-		<div id="pagination" />
-
-		<div id="sticky-menu">
-			<div
-				v-for="(app, index) in stickyApps"
-				:key="index"
-				:class="'application sticky-app app-' + app.trigger + ' ' + (selectedApp === appsPerPage + index ? 'selected' : '')"
-				:data-trigger="app.trigger"
-				:data-index="appsPerPage + index">
-				<div class="icon">
-					<span :class="'mdi mdi-' + app.icon" />
-				</div>
 			</div>
+
 		</div>
 	</div>
 </template>
@@ -43,11 +43,31 @@ export default {
 	//
 	data() {
 		return {
-			selectedApp: 0,
 			rows: 3,
 			appsPerRow: 3,
 			apps: [
 				{
+					name: "AppSettings",
+					display_name: "Settings",
+					image: "https://i.imgur.com/X50Hkzv.png", 
+					icon: "alpha-a-circle"
+				},
+				{
+					name: "test",
+					display_name: "Lol",
+					icon: "alpha-a-circle"
+				},
+				{
+					name: "test",
+					display_name: "Lol",
+					icon: "alpha-a-circle"
+				},
+				{
+					name: "test",
+					display_name: "Lol",
+					icon: "alpha-a-circle"
+				},
+				{
 					name: "test",
 					display_name: "Lol",
 					icon: "alpha-a-circle"
@@ -66,20 +86,66 @@ export default {
 					name: "test",
 					display_name: "Lol",
 					icon: "alpha-a-circle"
-				}
-			],
-			stickyApps: [
-				{
-					trigger: "contacts",
-					icon: "contacts"
 				},
 				{
-					trigger: "messages",
-					icon: "message-text"
+					name: "test",
+					display_name: "Lol",
+					icon: "alpha-a-circle"
 				},
 				{
-					trigger: "camera",
-					icon: "camera"
+					name: "test",
+					display_name: "Lol",
+					icon: "alpha-a-circle"
+				},
+				{
+					name: "test",
+					display_name: "Lol",
+					icon: "alpha-a-circle"
+				},
+				{
+					name: "test",
+					display_name: "Lol",
+					icon: "alpha-a-circle"
+				},
+				{
+					name: "test",
+					display_name: "Lol",
+					icon: "alpha-a-circle"
+				},
+				{
+					name: "test",
+					display_name: "Lol",
+					icon: "alpha-a-circle"
+				},
+				{
+					name: "test",
+					display_name: "Lol",
+					icon: "alpha-a-circle"
+				},
+				{
+					name: "test",
+					display_name: "Lol",
+					icon: "alpha-a-circle"
+				},
+				{
+					name: "test",
+					display_name: "Lol",
+					icon: "alpha-a-circle"
+				},
+				{
+					name: "test",
+					display_name: "Lol",
+					icon: "alpha-a-circle"
+				},
+				{
+					name: "test",
+					display_name: "Lol",
+					icon: "alpha-a-circle"
+				},
+				{
+					name: "test",
+					display_name: "Lol",
+					icon: "alpha-a-circle"
 				}
 			]
 		};
@@ -95,210 +161,87 @@ export default {
 		}
 	},
 
-	methods: {
-		toggleStatusBar() {
-			this.$store.dispatch("updateStatusBar", { show: !this.$store.getters.statusBar.show });
-		}
-	},
-
 	//
 	// Mounted
 	//
 	mounted() {
-		this.$root.$on("buttonPressed", button => {
-			switch (button) {
-			case "up":
-				this.selectedApp = this.selectedApp - 3;
-				break;
-			case "right":
-				this.selectedApp++;
-				break;
-			case "left":
-				this.selectedApp--;
-				break;
-			}
-		});
-
 		this.$store.dispatch("updateStatusBar", {
-			background: "#fafafa",
-			color: "black"
+			background: "rgba(0, 0, 0, 0.5)",
+			absolute: true,
+			color: "#fff"
 		});
 	}
 };
 </script>
 
-<style lang="css">
-.application
-{
-    position: relative;
-    width: 95px;
-    padding: 10px 0 10px 0;
-    margin: 5px 0 5px 0;
-    float: left;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-    font-size: 20px;
-    color: white;
-    height: 75px;
-    z-index: 100;
-}
+<style scoped>
+	* {
+		transition: all 0.15s ease-out;
+	}
 
-.application.selected .icon
-{
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    box-sizing: border-box;
-}
+	.menu {
+		display: flex;
+		align-items: center;
+		justify-content: space-evenly;
+		flex-wrap: wrap;
+	}
 
-.application p
-{
-    font-size: 14px;
-    margin: 0;
-    margin-top: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: calc(100% - 10px);
-}
+	.day-information {
+		margin: 50px 0 20px;
+		text-align: center;
+		font-family: "Raleway";
+		font-weight: 700;
+		font-size: 18px;
+		color: #fff;
+	}
 
-.icon
-{
-    width: 55px;
-    height: 55px;
-    border-radius: 5px;
-    font-family: 'Raleway';
-    background-color: #fafafa;
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+	.application {
+		position: relative;
+		margin: 8px 0 8px 0;
+		font-size: 20px;
+		width: 50px;
+		text-align: center;
+	}
 
-.icon .mdi
-{
-    color: #aaa;
-}
+	.application p {
+		font-family: "Raleway";
+		font-weight: 600;
+		font-size: 12px;
+		margin-top: 5px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		color: #fff;
+		user-select: none;
+	}
 
-.application.selected .icon {
+	.icon {
+		width: 42px;
+		height: 42px;
+		border-radius: 25px;
+		font-family: 'Raleway';
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		overflow: hidden;
+		margin: auto;
+		box-shadow: 2px 2px 2px 0px rgba(255,255,255,0.25);
+	}
 
-    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.3);
-}
+	.icon .mdi {
+		color: #aaa;
+	}
 
-.application .icon .mdi
-{
-    font-size: 32px;
-}
+	.icon img {
+		width: 100%;
+	}
 
-#pagination
-{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    bottom: 75px;
-    position: absolute;
-    height: 25px;
-    width: 100%;
-}
+	.application .icon:hover {
+		cursor: pointer;
+		box-shadow: 2px 2px 5px 0px rgba(255,255,255,0.75);
+	}
 
-.page
-{
-    margin-left: 5px;
-    margin-right: 5px;
-    width: 10px;
-    height: 10px;
-    border-radius: 100%;
-    background-color: rgba(255, 255, 255, 0.5);
-}
-
-.page.selected
-{
-    background-color: rgba(255, 255, 255, 0.9);
-}
-
-.menu
-{
-    margin-top: 35px;
-}
-
-#sticky-menu
-{
-    height: 65px;
-    width: 100%;
-    position: absolute;
-    bottom: 5px;
-    background-color: rgba(0, 0, 0, 0.3);
-}
-
-.sticky-app
-{
-    padding: 0;
-    height: 65px;
-    margin: 0;
-}
-
-.sticky-app .icon
-{
-    border-radius: 5px;
-}
-
-.sticky-app .icon .mdi
-{
-    color: #fff;
-}
-
-.sticky-app.selected .icon .mdi
-{
-    color: #fff;
-}
-
-/* Contacts */
-.app-contacts .icon
-{
-    background-color: #1968B2;
-}
-
-.app-contacts.selected .icon
-{
-    background-color: #1968B2;
-}
-
-
-/* Messages */
-.app-messages .icon
-{
-    background-color: #81BEF7;
-}
-
-.app-messages.selected .icon
-{
-    background-color: #81BEF7;
-}
-
-
-/* Explorer */
-.app-explorer .icon
-{
-    background-color: #C47C18;
-}
-
-.app-explorer.selected .icon
-{
-    background-color: #C47C18;
-}
-
-
-/* Camera */
-.app-camera .icon
-{
-    background-color: #6B6B6B;
-}
-
-.app-camera.selected .icon
-{
-    background-color: #6B6B6B;
-}
-
+	.application .icon .mdi {
+		font-size: 32px;
+	}
 </style>

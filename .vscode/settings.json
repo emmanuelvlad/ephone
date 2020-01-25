@@ -1,11 +1,5 @@
 {
 	"javascript.validate.enable": false,
-	"eslint.autoFixOnSave": true,
-	"eslint.validate": [
-		{ "language": "javascript", "autoFix": true },
-		{ "language": "vue", "autoFix": true },
-		{ "language": "html", "autoFix": true }
-	],
 	"editor.detectIndentation": false,
 	"editor.tabSize": 2,
 	"editor.insertSpaces": false,
@@ -13,4 +7,7 @@
 	"vetur.format.defaultFormatter.html": "js-beautify-html",
 	"javascript.format.insertSpaceBeforeFunctionParenthesis": true,
 	"vetur.format.options.useTabs": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true
+	}
 }

@@ -43,6 +43,7 @@ export default {
 	//
 	data() {
 		return {
+			selectedApp: 0,
 			rows: 3,
 			appsPerRow: 3,
 			apps: [
@@ -169,6 +170,10 @@ export default {
 			background: "rgba(0, 0, 0, 0.5)",
 			absolute: true,
 			color: "#fff"
+		});
+
+		this.$root.$on("buttonPressed", key => {
+			console.log("pressed: " + key);
 		});
 	}
 };

@@ -1,7 +1,6 @@
 <template>
 	<div id="phone-container">
 		<div id="phone-body">
-
 			<!-- Phone Top -->
 			<slot name="top" />
 
@@ -26,7 +25,7 @@ export default {
 <style>
 	#phone-container {
 		height: 624px;
-    width: 351px;
+		width: 351px;
 	}
 
 	#phone-body {
@@ -48,33 +47,33 @@ export default {
 	}
 
 	#blackout {
-			background: #0a0a0a;
-			height: 100%;
-			width: 100%;
-			z-index: 5;
-			border-radius: 10px 10px 0 0;
+		background: #0a0a0a;
+		height: 100%;
+		width: 100%;
+		z-index: 5;
+		border-radius: 10px 10px 0 0;
 	}
 
 	#statusBar
 	{
-			padding: 3px 10px;
-			height: 18px;
-			border-radius: 5px 5px 0 0;
-			color: #fff;
+		padding: 3px 10px;
+		height: 18px;
+		border-radius: 5px 5px 0 0;
+		color: #fff;
 	}
 
 	#statusBar div
 	{
-			display: inline-flex;
-			margin: 0 5px 0 5px;
-			position: relative;
-			height: 20px;
-			overflow: hidden;
-			text-align: center;
-			font-size: 14px;
-			line-height: 20px;
-			align-items: center;
-			vertical-align: middle;
+		display: inline-flex;
+		margin: 0 5px 0 5px;
+		position: relative;
+		height: 20px;
+		overflow: hidden;
+		text-align: center;
+		font-size: 14px;
+		line-height: 20px;
+		align-items: center;
+		vertical-align: middle;
 	}
 
 	.statusBar-date
@@ -88,31 +87,31 @@ export default {
 
 	.statusBar-battery.low
 	{
-			color: red;
+		color: red;
 	}
 
 	.statusBar-battery.charge
 	{
-			color: green;
+		color: green;
 	}
 
 	.battery-bar
 	{
-			width: 100%;
-			border: 1px solid red;
+		width: 100%;
+		border: 1px solid red;
 	}
 
 	#cursor {
-			position: absolute;
-			z-index: 999;
-			display: none;
+		position: absolute;
+		z-index: 999;
+		display: none;
 	}
 
 	.cursor-pointer {
-			cursor: pointer;
+		cursor: pointer;
 	}
 
 	.cursor-text {
-			cursor: text;
+		cursor: text;
 	}
 </style>

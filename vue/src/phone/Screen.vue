@@ -19,22 +19,19 @@
 				<div
 					v-if="silenced"
 					id="status-bar-silence">
-					<span
-						class="mdi mdi-bell-off-outline" />
+					<span class="mdi mdi-bell-off-outline" />
 				</div>
 
 				<!-- Network strenght -->
 				<div id="status-bar-network">
-					<span
-						:class="'mdi mdi-network-strength-' + (network ? network : 'outline')" />
+					<span :class="'mdi mdi-network-strength-' + (network ? network : 'outline')" />
 				</div>
 
 				<!-- Battery -->
 				<div
 					id="status-bar-battery"
 					:class="charging ? 'charge' : battery <= 15 ? 'low' : ''">
-					<span
-						:class="'mdi mdi-battery' + (charging ? '-charging' : '') + (batteryDecimal ? batteryDecimal === 100 ? '' : '-' + batteryDecimal : '-outline')" />
+					<span :class="'mdi mdi-battery' + (charging ? '-charging' : '') + (batteryDecimal ? batteryDecimal === 100 ? '' : '-' + batteryDecimal : '-outline')" />
 					<span>{{ battery }}%</span>
 				</div>
 
@@ -51,25 +48,22 @@
 </template>
 
 <script>
+import allApps from "../apps/index";
 export default {
-
 	//
 	// Name
 	//
 	name: "Screen",
 
 	//
-	// Components
+	// Mixins
 	//
-	components: {
-		AppMenu: () => import("../apps/menu"),
-		AppSettings: () => import("../apps/settings")
-	},
-	
+	mixins: [allApps],
+
 	//
 	// Data
 	//
-	data() {
+	data () {
 		return {
 			skin: "",
 			date: "18:14",
@@ -81,36 +75,36 @@ export default {
 	//
 	computed: {
 		battery: {
-			get() {
+			get () {
 				return this.$store.getters.battery;
 			},
 
-			set(newValue) {
+			set (newValue) {
 				return this.$store.commit("SET_BATTERY", newValue);
 			}
 		},
 
-		currentApp() {
+		currentApp () {
 			return this.$store.getters.currentApp;
 		},
 
-		network() {
+		network () {
 			return this.$store.getters.network;
 		},
 
-		silenced() {
+		silenced () {
 			return this.$store.getters.silenced;
 		},
 
-		charging() {
+		charging () {
 			return this.$store.getters.charging;
 		},
 
-		statusBar() {
+		statusBar () {
 			return this.$store.getters.statusBar;
 		},
 
-		batteryDecimal() {
+		batteryDecimal () {
 			if (this.battery >= 100) return 100;
 			return Math.floor(this.battery / 10) * 10;
 		}
@@ -120,7 +114,7 @@ export default {
 	// Methods
 	//
 	methods: {
-		home() {
+		home () {
 			// this.$store.actions
 		}
 	}
@@ -128,71 +122,65 @@ export default {
 </script>
 
 <style>
-	.container-fluid {
-		width: 100%;
-		height: 100%;
-	}
+.container-fluid {
+	width: 100%;
+	height: 100%;
+}
 
-	#bottom-bar {
-		position: absolute;
-		z-index: 99;
-    right: 0;
-    left: 0;
-    bottom: 5px;
-    height: 8px;
-    width: 33%;
-    margin: 0 auto;
-    border-radius: 5px;
-    background: red;
-    cursor: pointer;
-	}
+#bottom-bar {
+	position: absolute;
+	z-index: 99;
+	right: 0;
+	left: 0;
+	bottom: 5px;
+	height: 8px;
+	width: 33%;
+	margin: 0 auto;
+	border-radius: 5px;
+	background: red;
+	cursor: pointer;
+}
 
-	#status-bar {
-		position: absolute;
-    right: 0;
-		left: 0;
-		top: 0;
-		padding: 2px 10px;
-		height: 18px;
-		color: #fff;
-	}
+#status-bar {
+	position: absolute;
+	right: 0;
+	left: 0;
+	top: 0;
+	padding: 2px 10px;
+	height: 18px;
+	color: #fff;
+}
 
-	#status-bar div {
-		display: inline-flex;
-		margin: 0 5px 0 5px;
-		position: relative;
-		height: 20px;
-		overflow: hidden;
-		text-align: center;
-		font-size: 14px;
-		line-height: 20px;
-		align-items: center;
-		vertical-align: middle;
-	}
+#status-bar div {
+	display: inline-flex;
+	margin: 0 5px 0 5px;
+	position: relative;
+	height: 20px;
+	overflow: hidden;
+	text-align: center;
+	font-size: 14px;
+	line-height: 20px;
+	align-items: center;
+	vertical-align: middle;
+}
 
-	#status-bar-date
-	{
+#status-bar-date {
+}
 
-	}
+#status-bar-battery {
+}
 
-	#status-bar-battery
-	{
-	}
+#status-bar-battery.low {
+	color: red;
+}
 
-	#status-bar-battery.low
-	{
-			color: red;
-	}
+#status-bar-battery.charge {
+	color: green;
+}
 
-	#status-bar-battery.charge
-	{
-			color: green;
-	}
-
-	.battery-bar
-	{
-			width: 100%;
-			border: 1px solid red;
-	}
+.battery-bar {
+	width: 100%;
+	border: 1px solid red;
+}
 </style>
 

@@ -1,6 +1,5 @@
 <template>
 	<div class="container-fluid">
-
 		<div
 			id="status-bar"
 			v-if="statusBar.show"
@@ -10,8 +9,12 @@
 				color: ${statusBar.color};
 				`">
 
-			<div id="status-bar-content">
-				<div id="status-bar-date">
+			<div
+				id="status-bar-content"
+				class="d-flex">
+				<div
+					id="status-bar-date"
+					class="mr-auto">
 					{{ date }}
 				</div>
 
@@ -127,6 +130,10 @@ export default {
 	height: 100%;
 }
 
+.app-container {
+	height: 100%;
+}
+
 #bottom-bar {
 	position: absolute;
 	z-index: 99;
@@ -147,7 +154,6 @@ export default {
 	left: 0;
 	top: 0;
 	padding: 2px 10px;
-	height: 18px;
 	color: #fff;
 }
 
@@ -158,7 +164,8 @@ export default {
 	height: 20px;
 	overflow: hidden;
 	text-align: center;
-	font-size: 14px;
+	font-size: 0.8rem;
+	font-weight: 500;
 	line-height: 20px;
 	align-items: center;
 	vertical-align: middle;

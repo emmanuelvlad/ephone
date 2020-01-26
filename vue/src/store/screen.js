@@ -5,7 +5,7 @@ const state = {
 	statusBar: {
 		show: true,
 		absolute: true,
-		background: "rgba(0, 0, 0, 0.5)",
+		background: "inherit",
 		color: "#fafafa"
 	},
 	battery: 15,

@@ -39,7 +39,7 @@ export default {
 	background: -webkit-linear-gradient(left, #4A4F57 0%,#3d4247 100%);
 	border-radius: 30px;
 	height: 588px;
-	padding: 0 7px!important;
+	padding: 30px 7px!important;
 	width: 300px;
 }
 

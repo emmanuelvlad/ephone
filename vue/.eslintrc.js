@@ -28,6 +28,7 @@ module.exports = {
 		"indent": ["error", "tab"],
 		"semi": ["error", "always"],
 		"no-unused-vars": warnError,
+		"no-console": "off",
 		//
 		// Vue
 		//

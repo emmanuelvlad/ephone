@@ -1,32 +1,48 @@
 <template>
-	<div>
-		<div class="day-information">
-			Monday, Mar 25 | * 6°C
-		</div>
-		<div
-			class="menu">
+	<div class="app-container">
+		<video
+			loop
+			autoplay
+			muted
+			class="animated-background">
+			<source
+				src="/background.m4v"
+				type="video/mp4">
+		</video>
+		<div class="menu-content">
 
+			<div class="day-information">
+				Monday, Mar 25 | <v-icon
+					color="#ffec70"
+					size="large">
+					mdi-white-balance-sunny
+				</v-icon> 6°C
+			</div>
 			<div
-				v-for="(app, index) in apps"
-				:key="index"
-				:class="'application app-' + app.name + ' ' + (selectedApp === index ? 'selected' : '')">
+				class="menu">
 
 				<div
-					class="icon"
-					@click="$store.dispatch('changeApp', app.name)">
-					<img
-						v-if="app.image"
-						:src="app.image"
-						alt="settings">
-					<span
-						v-else
-						:class="'mdi mdi-' + app.icon" />
-				</div>
+					v-for="(app, index) in apps"
+					:key="index"
+					:class="'application app-' + app.name + ' ' + (selectedApp === index ? 'selected' : '')">
+
+					<div
+						class="icon"
+						@click="$store.dispatch('changeApp', app.name)">
+						<img
+							v-if="app.image"
+							:src="app.image"
+							alt="settings">
+						<span
+							v-else
+							:class="'mdi mdi-' + app.icon" />
+					</div>
 			
-				<p>{{ app.display_name }}</p>
+					<p>{{ app.display_name }}</p>
+
+				</div>
 
 			</div>
-
 		</div>
 	</div>
 </template>
@@ -167,7 +183,7 @@ export default {
 	//
 	mounted() {
 		this.$store.dispatch("updateStatusBar", {
-			background: "rgba(0, 0, 0, 0.5)",
+			background: "inherit",
 			absolute: true,
 			color: "#fff"
 		});
@@ -184,6 +200,23 @@ export default {
 		transition: all 0.15s ease-out;
 	}
 
+	.animated-background {
+		height: 100%;
+    width: 100%;
+    object-fit: cover;
+    z-index: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    overflow: hidden;
+	}
+
+	.menu-content {
+		position: absolute;
+		top: 0;
+		z-index: 10;
+	}
+
 	.menu {
 		display: flex;
 		align-items: center;
@@ -194,8 +227,6 @@ export default {
 	.day-information {
 		margin: 50px 0 20px;
 		text-align: center;
-		font-family: "Raleway";
-		font-weight: 700;
 		font-size: 18px;
 		color: #fff;
 	}

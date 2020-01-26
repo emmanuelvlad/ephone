@@ -35,14 +35,9 @@ export default {
 
 	#screen {
 		position: relative;
-		background-image: url(https://i.imgur.com/ALQvr7S.jpg);
-		background-color: #dfdfdf;
-		background-repeat: no-repeat;
-		background-size: cover;
-		background-position: center;
-		height: 528px;
-		width: 297px;
-		margin: 30px auto 0;
+		background-color: #111111;
+		height: 100%;
+		margin: auto;
 		overflow: hidden;
 	}
 
@@ -52,28 +47,6 @@ export default {
 		width: 100%;
 		z-index: 5;
 		border-radius: 10px 10px 0 0;
-	}
-
-	#statusBar
-	{
-		padding: 3px 10px;
-		height: 18px;
-		border-radius: 5px 5px 0 0;
-		color: #fff;
-	}
-
-	#statusBar div
-	{
-		display: inline-flex;
-		margin: 0 5px 0 5px;
-		position: relative;
-		height: 20px;
-		overflow: hidden;
-		text-align: center;
-		font-size: 14px;
-		line-height: 20px;
-		align-items: center;
-		vertical-align: middle;
 	}
 
 	.statusBar-date

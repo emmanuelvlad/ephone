@@ -1,22 +1,24 @@
 <template>
-	<div>
-		<img
-			id="cursor"
-			src="images/cursor.png"
-			width="32"
-			height="32">
+	<v-app>
+		<v-content>
+			<img
+				id="cursor"
+				src="images/cursor.png"
+				width="32"
+				height="32">
 
-		<div id="container">
-			<transition
-				name="custom-classes-transition"
-				enter-active-class="animated slideInUp"
-				leave-active-class="animated slideOutDown">
+			<div id="container">
+				<transition
+					name="custom-classes-transition"
+					enter-active-class="animated slideInUp"
+					leave-active-class="animated slideOutDown">
 
-				<phone v-if="show" />
+					<phone v-if="show" />
 
-			</transition>
-		</div>
-	</div>
+				</transition>
+			</div>
+		</v-content>
+	</v-app>
 </template>
 
 <script>
@@ -161,6 +163,9 @@ export default {
 </script>
 
 <style>
+	html, body {
+		font-family: "Roboto", sans-serif;
+	}
 	#container {
 		position: fixed;
 		bottom: 0;
